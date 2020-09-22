@@ -1,0 +1,42 @@
+// 全局变量设置
+$localBg:#F5F5F5;
+$color33: #333333;
+$color99: #999999;
+$colorF6: #F6F6F6;
+$themeColor: #FF6F1E;
+
+@font-face {
+  font-family: number;
+  src:  url-loader('SF-Pro-Display-Heavy.ttf')
+}
+.text {
+  font-size: 0.373rem;
+  color: $color99;
+}
+.number {
+  font-weight: 600;
+  // font-family: number;
+}
+
+// vant 样式重置
+.van-nav-bar .van-icon {
+  color: $color33;
+  vertical-align: middle;
+}
+.van-nav-bar__title {
+  color: $color33;
+}
+#navBar .van-button--large {
+  height: 1.15rem;
+  line-height: 1.15rem;
+}
+#navBar .van-button {
+  font-size: 0.4rem;
+}
+#navBar .van-button--default {
+  color: #1989fa;
+}
+#navBar .van-dialog__confirm {
+  color: #1989fa;
+  font-weight: 600;
+}
