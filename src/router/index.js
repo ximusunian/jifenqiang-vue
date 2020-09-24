@@ -17,16 +17,28 @@ const routes = [
     component: () => import("@/views/enlightening.vue")
   },
   {
+    path: "/task",
+    name: "task",
+    meta: { title: "任务详情", showTab: false },
+    component: () => import("@/views/task/index.vue")
+  },
+  {
     path: "/mine",
     name: "mine",
     meta: { title: "我的", showTab: true },
     component: () => import("@/views/mine/mine.vue")
   },
   {
-    path: "/task",
-    name: "task",
-    meta: { title: "任务详情", showTab: false },
-    component: () => import("@/views/task/index.vue")
+    path: "/mine/userInfo",
+    name: "userInfo",
+    meta: { title: "账户信息", showTab: false },
+    component: () => import("@/views/mine/userInfo.vue")
+  },
+  {
+    path: "/mine/accountDetails",
+    name: "accountDetails",
+    meta: { title: "收益明细", showTab: false },
+    component: () => import("@/views/mine/accountDetails.vue")
   }
 ];
 

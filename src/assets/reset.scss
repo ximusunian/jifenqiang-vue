@@ -1,13 +1,14 @@
 // 全局变量设置
 $localBg:#F5F5F5;
 $color33: #333333;
+$color66: #666666;
 $color99: #999999;
 $colorF6: #F6F6F6;
 $themeColor: #FF6F1E;
 
 @font-face {
   font-family: number;
-  src:  url-loader('SF-Pro-Display-Heavy.ttf')
+  src: url('~@/assets/SF-Pro-Display-Heavy.ttf')
 }
 .text {
   font-size: 0.373rem;
@@ -15,7 +16,7 @@ $themeColor: #FF6F1E;
 }
 .number {
   font-weight: 600;
-  // font-family: number;
+  font-family: number;
 }
 
 // vant 样式重置
@@ -26,17 +27,87 @@ $themeColor: #FF6F1E;
 .van-nav-bar__title {
   color: $color33;
 }
-#navBar .van-button--large {
+
+// tag: 任务详情导航栏
+#navBarTask .van-button--large {
   height: 1.15rem;
   line-height: 1.15rem;
 }
-#navBar .van-button {
+#navBarTask .van-button {
   font-size: 0.4rem;
 }
-#navBar .van-button--default {
+#navBarTask .van-button--default {
   color: #1989fa;
 }
-#navBar .van-dialog__confirm {
+#navBarTask .van-dialog__confirm {
   color: #1989fa;
   font-weight: 600;
+}
+
+// tag: 普通头部导航
+#navBar {
+  .van-nav-bar__title {
+    font-weight: normal;
+  }
+}
+
+// tag: 首页
+#index .van-notice-bar {
+  font-size: 0.347rem;
+}
+
+
+// tag: 任务详情
+#task .van-share-sheet__header {
+  text-align: left;
+}
+#task .van-share-sheet__title {
+  color: $color33;
+  font-weight: 600;
+  font-size: 0.533rem;
+}
+#task .van-share-sheet__description {
+  color: $color66;
+  font-size: 0.373rem;
+}
+#task .van-share-sheet__options {
+  justify-content: space-around;
+}
+#task .van-share-sheet__icon {
+  width: 1.067rem;
+  height: 1.067rem;
+}
+#task .van-share-sheet__name {
+  color: #7C7C7C;
+  font-size: 0.32rem;
+  margin-top: 0.2rem;
+}
+#task .van-share-sheet__cancel {
+  color: $color66;
+  font-size: 0.426rem;
+}
+
+// tag: 收益明细
+#accountDetails {
+  .van-tab {
+    color: $color33;
+    font-size: 0.4rem;
+  }
+  .van-tabs__line {
+    background-color: #ED7840;
+  }
+  .van-tab--active {
+    color: #ED7840;
+  }
+}
+
+// tag: 空状态
+#accountEmpty {
+  .van-empty__image {
+    width: 3.733rem;
+    height: 3.733rem;
+  }
+  .van-empty__description {
+    color: #CFCFCF;
+  }
 }
