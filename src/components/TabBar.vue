@@ -4,11 +4,11 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:23:15
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 15:41:04
+ * @LastEditTime: 2020-09-25 11:09:28
 -->
 <template>
   <div>
-    <van-tabbar v-model="tab_bar" active-color="#FF702C" inactive-color="#666666" :border=false :class="`bar-shadow ${isShowSpecial}?'safe-area':''`">
+    <van-tabbar v-model="tab_bar" active-color="#FF702C" inactive-color="#666666" :border=false :class="['bar-shadow', isShowSpecial?'safe-area':'']">
       <van-tabbar-item name="index" to="/">
         <span>App试玩</span>
         <template #icon="props">

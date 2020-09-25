@@ -4,23 +4,10 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:51:07
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 19:30:59
+ * @LastEditTime: 2020-09-25 09:25:56
 -->
 <template>
   <div id="accountListItem">
-    <van-cell center v-if="type == 1">
-      <template #title>
-        <div class="all-list-left">
-          <p class="title">完成豆果美食-菜谱食谱视频菜谱大全</p>
-          <p class="time">2019-11-13 20:57:25</p>
-        </div>
-      </template>
-      <template #right-icon>
-        <div class="all-list-right">
-          <span class="num">+0.80</span>
-        </div>
-      </template>
-    </van-cell>
     <van-cell center v-if="type == 1">
       <template #title>
         <div class="all-list-left">

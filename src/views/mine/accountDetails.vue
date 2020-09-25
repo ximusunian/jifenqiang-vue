@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:15:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 19:30:29
+ * @LastEditTime: 2020-09-25 09:25:42
 -->
 <template>
   <div id="accountDetails">
@@ -16,17 +16,20 @@
         <van-cell-group>
           <accountListItem type="1"></accountListItem>
         </van-cell-group>
-        <!-- <accountEmpty></accountEmpty> -->
         <!-- </van-list> -->
       </van-tab>
       <van-tab title="任务">
-        <accountEmpty></accountEmpty>
+        <van-cell-group>
+          <accountListItem type="1"></accountListItem>
+        </van-cell-group>
       </van-tab>
       <van-tab title="学徒">
         <accountEmpty></accountEmpty>
       </van-tab>
       <van-tab title="提现">
-        <accountEmpty></accountEmpty>
+        <van-cell-group>
+          <accountListItem type="2"></accountListItem>
+        </van-cell-group>
       </van-tab>
     </van-tabs>
   </div>

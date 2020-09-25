@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:47:04
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 17:16:48
+ * @LastEditTime: 2020-09-25 14:26:13
 -->
 <template>
   <div id="mine">
@@ -23,7 +23,7 @@
             <div class="text">今日收入</div>
             <div class="number today-earnings">￥13.00</div>
           </div>
-          <div class="withdrawal-btn">提现</div>
+          <div class="withdrawal-btn" @click="toWithdrawal">提现</div>
         </div>
         <div class="my-assets-second">
           <div>
@@ -46,7 +46,7 @@
               </div>
             </template>
           </van-cell>
-          <van-cell class="cell-item" is-link>
+          <van-cell class="cell-item" is-link @click="toHelpCenter">
             <template #title>
               <div class="title">
                 <img src="@/assets/help_center.png" class="cell-icon" />
@@ -83,8 +83,14 @@ export default {
     toUserInfo() {
       this.$router.push("/mine/userInfo")
     },
+    toWithdrawal() {
+      this.$router.push("/withdrawal")
+    },
     toAccountDetails() {
       this.$router.push("/mine/accountDetails")
+    },
+    toHelpCenter() {
+      this.$router.push("/mine/helpCenter")
     }
   }
 };
@@ -93,7 +99,7 @@ export default {
 <style lang="scss" scoped>
 #mine {
   font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, "sans-serif";
-  height: 100vh;
+  min-height: 100vh;
   background: $localBg;
   header {
     display: -webkit-flex;
@@ -125,7 +131,7 @@ export default {
     }
   }
   .my-container {
-    padding: 0 0.4rem 2rem;
+    padding: 0 0.4rem 2.5rem;
   }
   .my-assets {
     padding: 0.4rem 0.51rem;

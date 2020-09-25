@@ -57,32 +57,32 @@ $themeColor: #FF6F1E;
 }
 
 
-// tag: 任务详情
-#task .van-share-sheet__header {
+// tag: 分享面板
+.van-share-sheet__header {
   text-align: left;
 }
-#task .van-share-sheet__title {
+.van-share-sheet__title {
   color: $color33;
   font-weight: 600;
   font-size: 0.533rem;
 }
-#task .van-share-sheet__description {
+.van-share-sheet__description {
   color: $color66;
   font-size: 0.373rem;
 }
-#task .van-share-sheet__options {
+.van-share-sheet__options {
   justify-content: space-around;
 }
-#task .van-share-sheet__icon {
+.van-share-sheet__icon {
   width: 1.067rem;
   height: 1.067rem;
 }
-#task .van-share-sheet__name {
+.van-share-sheet__name {
   color: #7C7C7C;
   font-size: 0.32rem;
   margin-top: 0.2rem;
 }
-#task .van-share-sheet__cancel {
+.van-share-sheet__cancel {
   color: $color66;
   font-size: 0.426rem;
 }
@@ -109,5 +109,12 @@ $themeColor: #FF6F1E;
   }
   .van-empty__description {
     color: #CFCFCF;
+  }
+}
+
+// tag: 提现
+#withdrawal {
+  .van-field__control::placeholder {
+    color: #D1D1D1;
   }
 }

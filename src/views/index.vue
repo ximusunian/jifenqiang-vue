@@ -4,18 +4,26 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 16:10:13
+ * @LastEditTime: 2020-09-25 18:05:50
 -->
 <template>
   <div id="index">
     <!-- 头部 -->
     <header>
       <img src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png" />
-      <div class="header-right" @click="toWithdrawal">
+      <div id="guide-box">
+        <div class="header-right" @click="toWithdrawal">
+          <span class="balance">￥0.10</span>
+          <span class="text">提现</span>
+          <van-icon name="arrow" size="16" />
+        </div>
+      </div>
+      
+      <!-- <div class="header-right border">
         <span class="balance">￥0.10</span>
         <span class="text">提现</span>
         <van-icon name="arrow" size="16" />
-      </div>
+      </div> -->
     </header>
 
     <!-- 活动banner -->
@@ -47,7 +55,7 @@
     <div class="container">
       <!-- 快速任务 -->
       <div class="fast-task">
-        <p class="task-title">标准任务</p>
+        <p class="task-title first">标准任务</p>
         <van-cell-group>
           <van-cell center @click="startTask">
             <template #title>
@@ -103,11 +111,13 @@
         </van-cell-group>
       </div>
     </div>
+
+    <van-overlay :show="showGuide"></van-overlay>
   </div>
 </template>
 
 <script>
-import { Icon, NoticeBar, Cell, CellGroup, Toast } from "vant";
+import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay } from "vant";
 export default {
   name: "index",
   components: {
@@ -116,15 +126,33 @@ export default {
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
     [Toast.name]: Toast,
+    [Overlay.name]: Overlay
   },
   data() {
-    return {};
+    return {
+      showGuide: false
+    };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    // console.log(document.getElementsByClassName("first")[0].offsetTop);
+    // let target = document.querySelector('.header-right')
+    // let pos = target.getBoundingClientRect()
+
+    // let clone = target.cloneNode(true)
+    // clone.style.position = 'fixed'
+    // clone.style.left = pos.left + "px"
+    // clone.style.top = pos.top + "px"
+    // clone.style.background = "#FFF"
+    // clone.style.zIndex = 100
+    // document.querySelector('.header-right').style.display = "none"
+    // document.getElementById("guide-box").appendChild(clone)
+  },
   methods: {
     // 去提现
-    toWithdrawal() {},
+    toWithdrawal() {
+      this.$router.push("/withdrawal")
+    },
 
     // 活动banner事件开始-----------------------------
     // 去邀请
@@ -233,7 +261,7 @@ export default {
 
   // 任务列表
   .container {
-    padding: 0.2rem 0.387rem 0;
+    padding: 0.2rem 0.387rem 2.5rem;
     .task-title {
       color: $color33;
       font-size: 0.44rem;
@@ -337,6 +365,15 @@ export default {
         color: #f44d49;
       }
     }
+  }
+
+  .border {
+    height: 0.893rem;
+    width: 3.2rem;
+    justify-content: center;
+    border-radius: 0.2rem;
+    box-shadow: 0px 0px 0 800px rgba(0, 0, 0, 0.6);
+    z-index: 2;
   }
 }
 </style>

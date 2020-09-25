@@ -39,7 +39,37 @@ const routes = [
     name: "accountDetails",
     meta: { title: "收益明细", showTab: false },
     component: () => import("@/views/mine/accountDetails.vue")
-  }
+  },
+  {
+    path: "/mine/helpCenter",
+    name: "helpCenter",
+    meta: { title: "帮助中心", showTab: false },
+    component: () => import("@/views/mine/helpCenter.vue")
+  },
+  {
+    path: "/withdrawal",
+    name: "withdrawal",
+    meta: { title: "微信提现", showTab: false },
+    component: () => import("@/views/withdrawal/withdrawal.vue")
+  },
+  {
+    path: "/shareDownload",
+    name: "shareDownload",
+    meta: { title: "试玩应用-轻松赚钱", showTab: false },
+    component: () => import("@/views/validationModel/shareDownload.vue")
+  },
+  {
+    path: "/installSuccess",
+    name: "installSuccess",
+    meta: { title: "验证成功", showTab: false },
+    component: () => import("@/views/validationModel/installSuccess.vue")
+  },
+  {
+    path: "/certificationBackPage",
+    name: "certificationBackPage",
+    meta: { title: "首页-描述文件", showTab: false },
+    component: () => import("@/views/validationModel/certificationBackPage.vue")
+  },
 ];
 
 const router = new VueRouter({
