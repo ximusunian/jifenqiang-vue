@@ -8,7 +8,7 @@
 -->
 <template>
   <div id="installSuccess">
-    <img src="@/assets/success.png" />
+    <img src="@/assets/images/success.png" />
     <p>验证成功</p>
     <p style="margin-top: 0.25rem">可以继续开始任务了</p>
     <div class="btn" @click="toApp">继续赚钱</div>

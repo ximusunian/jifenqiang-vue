@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import emptyImg from "@/assets/noting-bg.png";
+import emptyImg from "@/assets/images/noting-bg.png";
 import { Empty } from "vant";
 export default {
   name: "accountEmpty",

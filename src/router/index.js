@@ -52,6 +52,20 @@ const routes = [
     meta: { title: "微信提现", showTab: false },
     component: () => import("@/views/withdrawal/withdrawal.vue")
   },
+  // tag: 绑定手机及微信页面路由
+  {
+    path: "/bindPhone",
+    name: "bindPhone",
+    meta: { title: "绑定手机", showTab: false },
+    component: () => import("@/views/bind/bindPhone.vue")
+  },
+  {
+    path: "/bindWeChat",
+    name: "bindWeChat",
+    meta: { title: "微信授权", showTab: false },
+    component: () => import("@/views/bind/bindWeChat.vue")
+  },
+  // tag: 分享回流、安装证书等页面路由
   {
     path: "/shareDownload",
     name: "shareDownload",

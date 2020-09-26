@@ -8,7 +8,7 @@
 -->
 <template>
   <div id="enlightening">
-    <img src="@/assets/invitation_bg.png" class="header-bg" />
+    <img src="@/assets/images/invitation_bg.png" class="header-bg" />
     <div class="container">
       <div class="asset-analysis-box">
         <div class="asset-analysis-box-item">
@@ -26,7 +26,7 @@
       </div>
       <div class="invitation-step">
         <div class="rule-description">
-          <img src="@/assets/rule_description.png" />
+          <img src="@/assets/images/rule_description.png" />
         </div>
         <p>
           每个徒弟完成1个任务，你得
@@ -35,23 +35,23 @@
         <p>每个徒弟均无限奖励，永不封顶</p>
         <div class="step">
           <div class="step-item">
-            <img src="@/assets/invitation_icon.png" />
+            <img src="@/assets/images/invitation_icon.png" />
             <span>邀请好友</span>
           </div>
           <div class="step-arrow">
-            <img src="@/assets/step_arrow_icon.png" />
+            <img src="@/assets/images/step_arrow_icon.png" />
             <span></span>
           </div>
           <div class="step-item">
-            <img src="@/assets/assignment_icon.png" />
+            <img src="@/assets/images/assignment_icon.png" />
             <span>好友完成任务</span>
           </div>
           <div class="step-arrow">
-            <img src="@/assets/step_arrow_icon.png" />
+            <img src="@/assets/images/step_arrow_icon.png" />
             <span></span>
           </div>
           <div class="step-item">
-            <img src="@/assets/reward_icon.png" />
+            <img src="@/assets/images/reward_icon.png" />
             <span>你获得奖励</span>
           </div>
         </div>
@@ -74,8 +74,8 @@
 
 <script>
 import { ShareSheet } from "vant";
-import weChat from '@/assets/weChat.png';
-import friend from '@/assets/friend.png';
+import weChat from '@/assets/images/weChat.png';
+import friend from '@/assets/images/friend.png';
 export default {
   name: "enlightening",
   data() {

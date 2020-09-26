@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:35:03
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 20:00:54
+ * @LastEditTime: 2020-09-26 13:14:30
 -->
 <template>
   <div id="certificationBackPage">
@@ -12,7 +12,7 @@
       <div class="container">
         <div class="box">
           <p class="txt">认证文件下载完成后，点击去安装</p>
-          <img src="@/assets/description_file.png" />
+          <img src="@/assets/images/description_file.png" />
           <div class="btn_box">
             <span class="again_download" @click="reDownload">重新下载</span>
             <span class="to_install" @click="install">去安装</span>
@@ -45,16 +45,12 @@ export default {
       location.reload();
     },
     install() {
-      let url;
-      let reg = new RegExp("(^|&)" + "flag" + "=([^&]*)(&|$)", "i");
-      let r = window.location.search.substr(1).match(reg);
-      if (r != null) {
-        url = `https://${window.location.host}/${decodeURIComponent(r[2])}.mobileconfig`;
-      }
+      let flag = this.$route.query.flag
+      let url = `https://jifenqiang.htyvip.com/${decodeURIComponent(flag)}.mobileconfig`
       const a = document.createElement("a");
       a.setAttribute("download", "");
-      a.setAttribute("href", "");
-      // a.click();
+      a.setAttribute("href", url);
+      a.click();
     }
   }
 };

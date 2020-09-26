@@ -10,10 +10,10 @@
   <div id="mine">
     <header @click="toUserInfo">
       <div class="info">
-        <img src="@/assets/head_img.png" />
+        <img src="@/assets/images/head_img.png" />
         <span>新手101154</span>
       </div>
-      <img src="@/assets/icon_more.png" />
+      <img src="@/assets/images/icon_more.png" />
     </header>
     
     <div class="my-container">
@@ -41,7 +41,7 @@
           <van-cell class="cell-item radius-top" is-link @click="toAccountDetails">
             <template #title>
               <div class="title">
-                <img src="@/assets/purse.png" class="cell-icon" />
+                <img src="@/assets/images/purse.png" class="cell-icon" />
                 <span>账户明细</span>
               </div>
             </template>
@@ -49,7 +49,7 @@
           <van-cell class="cell-item" is-link @click="toHelpCenter">
             <template #title>
               <div class="title">
-                <img src="@/assets/help_center.png" class="cell-icon" />
+                <img src="@/assets/images/help_center.png" class="cell-icon" />
                 <span>帮助中心</span>
               </div>
             </template>
@@ -57,7 +57,7 @@
           <van-cell class="cell-item radius-bottom" title="" is-link>
             <template #title>
               <div class="title">
-                <img src="@/assets/contact_us.png" class="cell-icon" />
+                <img src="@/assets/images/contact_us.png" class="cell-icon" />
                 <span>联系我们</span>
               </div>
             </template>

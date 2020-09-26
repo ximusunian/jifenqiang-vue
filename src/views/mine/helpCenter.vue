@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 09:28:09
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 09:42:32
+ * @LastEditTime: 2020-09-26 15:12:09
 -->
 <template>
    <div id="helpCenter">
@@ -36,7 +36,7 @@ export default {
   name: "helpCenter",
   data() {
     return {
-      activeNames: ['1'],
+      activeNames: ['0'],
     }
   },
   components: {

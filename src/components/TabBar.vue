@@ -35,12 +35,12 @@
 import { Tabbar, TabbarItem } from "vant";
 // import localstorage from "@/localstorage";
 
-import index from "@/assets/index.png";
-import index_active from "@/assets/index_active.png";
-import enlightening_active from "@/assets/enlightening_active.png";
-import enlightening from "@/assets/enlightening.png";
-import mine_active from "@/assets/mine_active.png";
-import mine from "@/assets/mine.png";
+import index from "@/assets/images/index.png";
+import index_active from "@/assets/images/index_active.png";
+import enlightening_active from "@/assets/images/enlightening_active.png";
+import enlightening from "@/assets/images/enlightening.png";
+import mine_active from "@/assets/images/mine_active.png";
+import mine from "@/assets/images/mine.png";
 
 export default {
   name: "TabBar",

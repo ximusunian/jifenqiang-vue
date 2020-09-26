@@ -52,10 +52,14 @@ $themeColor: #FF6F1E;
 }
 
 // tag: 首页
-#index .van-notice-bar {
-  font-size: 0.347rem;
+#index {
+  .van-notice-bar {
+    font-size: 0.347rem;
+  }
+  .van-dialog__confirm, .van-dialog__confirm:active {
+    font-weight: 500;
+  }
 }
-
 
 // tag: 分享面板
 .van-share-sheet__header {
@@ -116,5 +120,20 @@ $themeColor: #FF6F1E;
 #withdrawal {
   .van-field__control::placeholder {
     color: #D1D1D1;
+  }
+}
+
+// tag: 分享下载页
+#shareDownload {
+  .van-notice-bar__content.van-ellipsis {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+// tag: 绑定手机
+#bindPhone {
+  .van-field__left-icon {
+    margin-right: 0.2rem;
   }
 }

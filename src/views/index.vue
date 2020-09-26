@@ -4,13 +4,15 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 18:05:50
+ * @LastEditTime: 2020-09-26 15:31:58
 -->
 <template>
   <div id="index">
     <!-- 头部 -->
     <header>
-      <img src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png" />
+      <img
+        src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
+      />
       <div id="guide-box">
         <div class="header-right" @click="toWithdrawal">
           <span class="balance">￥0.10</span>
@@ -18,33 +20,32 @@
           <van-icon name="arrow" size="16" />
         </div>
       </div>
-      
-      <!-- <div class="header-right border">
-        <span class="balance">￥0.10</span>
-        <span class="text">提现</span>
-        <van-icon name="arrow" size="16" />
-      </div> -->
     </header>
 
     <!-- 活动banner -->
     <div class="activity-zone">
       <div @click="toInvite">
-        <img src="@/assets/invite_banner.png" />
+        <img src="@/assets/images/invite_banner.png" />
       </div>
       <div @click="toSafar">
-        <img src="@/assets/lucky_draw_banner.png" />
+        <img src="@/assets/images/lucky_draw_banner.png" />
       </div>
     </div>
 
     <!-- 通知 -->
-    <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o">任务随时更新；每天15点-20点大量任务上线</van-notice-bar>
+    <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o"
+      >任务随时更新；每天15点-20点大量任务上线</van-notice-bar
+    >
 
     <!-- 进行中的任务 -->
     <div class="box">
       <div class="tasking" @click="startTask">
         <div class="tasking-left">
-          <img src="@/assets/3.png" class="tasking-left-img" />
-          <img src="@/assets/alarm_clock.gif" class="tasking-left-clock" />
+          <img src="@/assets/images/3.png" class="tasking-left-img" />
+          <img
+            src="@/assets/images/alarm_clock.gif"
+            class="tasking-left-clock"
+          />
           <span>任务进行中...</span>
         </div>
         <div class="tasking-right">+￥1.10</div>
@@ -60,7 +61,7 @@
           <van-cell center @click="startTask">
             <template #title>
               <div class="task-list-item-left">
-                <img src="@/assets/3.png" />
+                <img src="@/assets/images/3.png" />
                 <div class="task-list-item-left-desc">
                   <span>名称</span>
                   <span>剩余100份</span>
@@ -71,10 +72,10 @@
               <span class="task-list-item-amount">+￥0.80</span>
             </template>
           </van-cell>
-          <van-cell center>
+          <van-cell center @click="repeatTask">
             <template #title>
               <div class="task-list-item-left">
-                <img src="@/assets/3.png" />
+                <img src="@/assets/images/3.png" />
                 <div class="task-list-item-left-desc">
                   <span>名称</span>
                   <span>剩余100份</span>
@@ -112,12 +113,16 @@
       </div>
     </div>
 
+    <van-dialog v-model="show" show-cancel-button confirmButtonColor="#FF5502" cancelButtonColor="#A7A7A7" confirm="confirmAbandon">
+      <p class="repeatTips">不能同时抢多个任务！是否放弃上个任务领取该任务？</p>
+    </van-dialog>
+
     <van-overlay :show="showGuide"></van-overlay>
   </div>
 </template>
 
 <script>
-import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay } from "vant";
+import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay, Dialog } from "vant";
 export default {
   name: "index",
   components: {
@@ -126,10 +131,12 @@ export default {
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,
     [Toast.name]: Toast,
-    [Overlay.name]: Overlay
+    [Overlay.name]: Overlay,
+    [Dialog.Component.name]: Dialog.Component
   },
   data() {
     return {
+      show: false,
       showGuide: false
     };
   },
@@ -138,7 +145,6 @@ export default {
     // console.log(document.getElementsByClassName("first")[0].offsetTop);
     // let target = document.querySelector('.header-right')
     // let pos = target.getBoundingClientRect()
-
     // let clone = target.cloneNode(true)
     // clone.style.position = 'fixed'
     // clone.style.left = pos.left + "px"
@@ -151,7 +157,7 @@ export default {
   methods: {
     // 去提现
     toWithdrawal() {
-      this.$router.push("/withdrawal")
+      this.$router.push("/withdrawal");
     },
 
     // 活动banner事件开始-----------------------------
@@ -168,10 +174,22 @@ export default {
     // 活动banner事件结束-----------------------------
 
     startTask() {
-      this.$router.push("/task")
+      this.$router.push("/task");
     },
+    
+    // 任务重复
+    repeatTask() {
+      this.show = true
+    },
+
+    // 确实放弃之前任务，进行新任务
+    confirmAbandon() {
+
+    },
+
+    // 任务预告
     planToast() {
-      Toast('任务还未开始哦');
+      Toast("任务还未开始哦");
     }
   }
 };
@@ -338,8 +356,8 @@ export default {
           width: 1.3328rem;
           height: 1.3328rem;
           border-radius: 0.2rem;
-          background: #FE712B;
-          color: #FFF;
+          background: #fe712b;
+          color: #fff;
           span:last-child {
             margin-top: -0.2rem;
           }
@@ -374,6 +392,13 @@ export default {
     border-radius: 0.2rem;
     box-shadow: 0px 0px 0 800px rgba(0, 0, 0, 0.6);
     z-index: 2;
+  }
+  
+  .repeatTips {
+    padding: 0.52rem 0.933rem 0.493rem;
+    color: $color33;
+    font-size: 0.426rem;
+    text-align: center;
   }
 }
 </style>

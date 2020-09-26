@@ -26,7 +26,7 @@
         <div class="pay-list-left">
           <p class="title">
             <span>提现</span>
-            <img src="@/assets/pay-wechat-icon.png" class="type-icon" />
+            <img src="@/assets/images/pay-wechat-icon.png" class="type-icon" />
             <span>微信</span>
           </p>
           <p class="time">2019-11-13 20:57:25</p>

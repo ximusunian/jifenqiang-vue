@@ -16,7 +16,7 @@
         <div class="countdown-box-next">
           <span class="countdown-box-next-num">￥0.50</span>
           <div class="countdown-box-next-clock">
-            <img src="@/assets/alarm_clock.gif" class="countdown-box-next-clock-img"/>
+            <img src="@/assets/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
             <span class="countdown-box-next-clock-time">剩余55:30</span>
           </div>
         </div>
@@ -62,7 +62,7 @@
     <van-popup v-model="show" round :close-on-click-overlay=false :style="style">
       <div class="popup-box">
         <div class="popup-top">
-          <p>返回桌面，打开 AppStore<img src="@/assets/appStore.png" /></p>
+          <p>返回桌面，打开 AppStore<img src="@/assets/images/appStore.png" /></p>
           <p>在搜索框内输入 <span class="app-name">塔防游戏</span></p>
         </div>
         <van-divider/>
@@ -99,13 +99,13 @@
     <!-- 领取成功 -->
     <van-popup v-model="successPopupShow" round :close-on-click-overlay=false :style="style">
       <div class="result-popup">
-        <img src="@/assets/gold_coins.png" class="top-img"/>
+        <img src="@/assets/images/gold_coins.png" class="top-img"/>
         <span class="result-tips">完成任务</span>
         <p><span>￥</span>0.80</p>
         <span>已到账</span>
         <div class="operation">
-          <img src="@/assets/invited_money.png" @click="showShareSheet"/>
-          <img src="@/assets/continue_play.png" @click="continuePlay"/>
+          <img src="@/assets/images/invited_money.png" @click="showShareSheet"/>
+          <img src="@/assets/images/continue_play.png" @click="continuePlay"/>
         </div>
       </div>
     </van-popup>
@@ -115,8 +115,8 @@
       <div class="result-error-popup">
         <p class="result-tips">时间还不够哦~</p>
         <p>还需试玩 <span class="continue-time">2分钟52秒</span></p>
-        <img src="@/assets/gold_coins.png" class="app-img"/>
-        <img src="@/assets/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
+        <img src="@/assets/images/gold_coins.png" class="app-img"/>
+        <img src="@/assets/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
       </div>
     </van-popup>
 
@@ -133,8 +133,8 @@
 <script>
 import navBarTask from "@/components/NavBarTask"
 import { Divider, Popup, ShareSheet } from "vant"
-import weChat from '@/assets/weChat.png';
-import friend from '@/assets/friend.png';
+import weChat from '@/assets/images/weChat.png';
+import friend from '@/assets/images/friend.png';
 export default {
   name: "task",
   components: {
