@@ -9,7 +9,8 @@ axios.defaults.baseURL = '/';
 axios.interceptors.request.use(
   config => {
     config.headers = {
-      "Content-Type": "application/json;charset=UTF-8"
+      "Content-Type": "application/json;charset=UTF-8",
+      "Authorization": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4iLCJBc3BOZXQuSWRlbnRpdHkuU2VjdXJpdHlTdGFtcCI6ImQwMTY4NGNlLTVjN2EtNzhlNS0zYWI3LTM5ZjgzZDc4NzliYyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwic3ViIjoiMSIsImp0aSI6IjQyZjgyMzk4LTY3YTAtNGZiZS1hM2MxLTI0YzZlNzU2YTk4YiIsImlhdCI6MTYwMzY3OTY1NiwibmJmIjoxNjAzNjc5NjU2LCJleHAiOjE5MTkwMzk2NTYsImlzcyI6IkpGUVdpbm5lciIsImF1ZCI6IkpGUVdpbm5lciJ9.CF_WohNeuRDQNc6wNeDrOeqwPreU0ir_jf637UWcrxI'
     };
     return config;
   },

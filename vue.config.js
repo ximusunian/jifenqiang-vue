@@ -53,18 +53,18 @@ module.exports = {
   // webpack-dev-server 相关配置
   devServer: {
     open: true,
-    host: "192.168.0.120",
+    host: "192.168.0.148",
     port: 8200,
     https: false,
     hotOnly: false,
     // http 代理配置
     proxy: {
-      "/huitongyi": {
-        target: 'http://47.99.192.119:8080',
+      "/": {
+        target: 'http://jfqapi.bktt1.top/',
         changeOrigin: true,
         pathRewrite: {
           // ['^/' + process.env.BASE_API]: ''
-          "^/huitongyi": "huitongyi"
+          // "^/huitongyi": "huitongyi"
         }
       }
     },

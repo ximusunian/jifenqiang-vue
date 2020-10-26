@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-26 15:31:58
+ * @LastEditTime: 2020-10-26 10:43:24
 -->
 <template>
   <div id="index">
@@ -38,17 +38,17 @@
     >
 
     <!-- 进行中的任务 -->
-    <div class="box">
+    <div class="box" v-if="Object.keys(goingTask).length !== 0">
       <div class="tasking" @click="startTask">
         <div class="tasking-left">
-          <img src="@/assets/images/3.png" class="tasking-left-img" />
+          <img :src="goingTask.thumb" class="tasking-left-img" />
           <img
             src="@/assets/images/alarm_clock.gif"
             class="tasking-left-clock"
           />
           <span>任务进行中...</span>
         </div>
-        <div class="tasking-right">+￥1.10</div>
+        <div class="tasking-right">+￥{{goingTask.amount}}</div>
       </div>
     </div>
 
@@ -58,18 +58,18 @@
       <div class="fast-task">
         <p class="task-title first">标准任务</p>
         <van-cell-group>
-          <van-cell center @click="startTask">
+          <van-cell center @click="startTask" v-for="(item, index) in taskList" :key="index">
             <template #title>
               <div class="task-list-item-left">
-                <img src="@/assets/images/3.png" />
+                <img :src="item.thumb" />
                 <div class="task-list-item-left-desc">
-                  <span>名称</span>
-                  <span>剩余100份</span>
+                  <span>{{translateStr(item.appname)}}</span>
+                  <span>剩余{{translateNum(item.kucun)}}份</span>
                 </div>
               </div>
             </template>
             <template #right-icon>
-              <span class="task-list-item-amount">+￥0.80</span>
+              <span class="task-list-item-amount">+￥{{item.amount}}</span>
             </template>
           </van-cell>
           <van-cell center @click="repeatTask">
@@ -123,6 +123,7 @@
 
 <script>
 import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay, Dialog } from "vant";
+import { filterGoingTask, filterOtherTask, taskNameTranslate, taskNumTranslate } from "@/utils/utils"
 export default {
   name: "index",
   components: {
@@ -137,24 +138,32 @@ export default {
   data() {
     return {
       show: false,
-      showGuide: false
+      showGuide: false,
+      taskList: [],
+      goingTask: {}
     };
   },
-  created() {},
-  mounted() {
-    // console.log(document.getElementsByClassName("first")[0].offsetTop);
-    // let target = document.querySelector('.header-right')
-    // let pos = target.getBoundingClientRect()
-    // let clone = target.cloneNode(true)
-    // clone.style.position = 'fixed'
-    // clone.style.left = pos.left + "px"
-    // clone.style.top = pos.top + "px"
-    // clone.style.background = "#FFF"
-    // clone.style.zIndex = 100
-    // document.querySelector('.header-right').style.display = "none"
-    // document.getElementById("guide-box").appendChild(clone)
+  created() {
+    this.getTask()
   },
+  mounted() {},
   methods: {
+    translateStr(str) {
+      return taskNameTranslate(str)
+    },
+    translateNum(num) {
+      return taskNumTranslate(num)
+    },
+    getTask() {
+      const token = "AF69227E49DBBE565A25394E"
+      this.$api.getTask({taskerModel: "试玩任务", appMenu: "标准任务", IsRec: true}).then(res => {
+        this.taskList = filterOtherTask(res.result)
+        let list = filterGoingTask(res.result)
+        if(list.length !== 0) {
+          this.goingTask = filterGoingTask(res.result)[0]
+        }
+      }) 
+    },
     // 去提现
     toWithdrawal() {
       this.$router.push("/withdrawal");
@@ -174,7 +183,11 @@ export default {
     // 活动banner事件结束-----------------------------
 
     startTask() {
-      this.$router.push("/task");
+      if(Object.keys(goingTask).length !== 0) {
+        this.show = true
+      } else {
+        this.$router.push("/task");
+      }
     },
     
     // 任务重复

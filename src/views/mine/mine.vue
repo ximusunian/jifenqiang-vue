@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:47:04
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 14:26:13
+ * @LastEditTime: 2020-10-15 09:26:31
 -->
 <template>
   <div id="mine">
@@ -77,9 +77,21 @@ export default {
     [CellGroup.name]: CellGroup
   },
   data() {
-    return {};
+    return {
+      userInfo: {}
+    };
+  },
+  created() {
+    // this.getInfo()
   },
   methods: {
+    getInfo() {
+      const token = "AF69227E49DBBE565A25394E"
+      this.$api.getInfo({token: token}).then(res => {
+        let result = res.slice(10, res.length-1)
+        this.userInfo = JSON.parse(result)
+      }) 
+    },
     toUserInfo() {
       this.$router.push("/mine/userInfo")
     },
