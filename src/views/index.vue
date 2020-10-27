@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-10-26 10:43:24
+ * @LastEditTime: 2020-10-27 10:44:25
 -->
 <template>
   <div id="index">
@@ -156,7 +156,7 @@ export default {
     },
     getTask() {
       const token = "AF69227E49DBBE565A25394E"
-      this.$api.getTask({taskerModel: "试玩任务", appMenu: "标准任务", IsRec: true}).then(res => {
+      this.$api.getTask({DeviceModel: '苹果系统',taskerModel: "试玩任务", appMenu: "标准任务", IsRec: 1}).then(res => {
         this.taskList = filterOtherTask(res.result)
         let list = filterGoingTask(res.result)
         if(list.length !== 0) {

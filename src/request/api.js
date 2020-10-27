@@ -1,4 +1,5 @@
 import { get, post, put, deleteAxios } from "./http";
+import Qs from "qs"
 const api = {
   // uploadImg: "/huitongyi/app/fileUpload.do",
   getInfo: "config.aspx",
