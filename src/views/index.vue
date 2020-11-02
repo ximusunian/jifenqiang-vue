@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-10-27 10:44:25
+ * @LastEditTime: 2020-11-02 18:26:52
 -->
 <template>
   <div id="index">
@@ -33,13 +33,11 @@
     </div>
 
     <!-- 通知 -->
-    <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o"
-      >任务随时更新；每天15点-20点大量任务上线</van-notice-bar
-    >
+    <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o">任务随时更新；每天15点-20点大量任务上线</van-notice-bar>
 
     <!-- 进行中的任务 -->
     <div class="box" v-if="Object.keys(goingTask).length !== 0">
-      <div class="tasking" @click="startTask">
+      <div class="tasking" @click="toDetail()">
         <div class="tasking-left">
           <img :src="goingTask.thumb" class="tasking-left-img" />
           <img
@@ -55,15 +53,15 @@
     <!-- 任务 -->
     <div class="container">
       <!-- 快速任务 -->
-      <div class="fast-task">
+      <div class="fast-task" v-if="taskList.length != 0">
         <p class="task-title first">标准任务</p>
         <van-cell-group>
-          <van-cell center @click="startTask" v-for="(item, index) in taskList" :key="index">
+          <van-cell center @click="startTask(item.appId)" v-for="(item, index) in taskList" :key="index">
             <template #title>
               <div class="task-list-item-left">
                 <img :src="item.thumb" />
                 <div class="task-list-item-left-desc">
-                  <span>{{translateStr(item.appname)}}</span>
+                  <span>{{translateStr(item.appName)}}</span>
                   <span>剩余{{translateNum(item.kucun)}}份</span>
                 </div>
               </div>
@@ -72,7 +70,7 @@
               <span class="task-list-item-amount">+￥{{item.amount}}</span>
             </template>
           </van-cell>
-          <van-cell center @click="repeatTask">
+          <!-- <van-cell center @click="repeatTask">
             <template #title>
               <div class="task-list-item-left">
                 <img src="@/assets/images/3.png" />
@@ -85,28 +83,28 @@
             <template #right-icon>
               <span class="task-list-item-amount">+￥0.80</span>
             </template>
-          </van-cell>
+          </van-cell> -->
         </van-cell-group>
       </div>
 
-      <div class="plan-task">
+      <div class="plan-task" v-if="planTaskList.length != 0">
         <p class="task-title">任务预告</p>
         <van-cell-group>
-          <van-cell center @click="planToast">
+          <van-cell center @click="planToast" v-for="(item, index) in planTaskList" :key="index">
             <template #title>
               <div class="task-list-item-left">
                 <div class="task-list-item-left-box">
-                  <span>今日</span>
+                  <span>{{getTimeFlag(item.creationtime)}}</span>
                   <span>14:52</span>
                 </div>
                 <div class="task-list-item-left-desc">
-                  <span>名称</span>
-                  <span>剩余100份</span>
+                  <span>{{translateStr(item.appName)}}</span>
+                  <span>剩余{{translateNum(item.kucun)}}份</span>
                 </div>
               </div>
             </template>
             <template #right-icon>
-              <span class="task-list-item-amount">￥0.80</span>
+              <span class="task-list-item-amount">￥{{item.amount}}</span>
             </template>
           </van-cell>
         </van-cell-group>
@@ -123,7 +121,14 @@
 
 <script>
 import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay, Dialog } from "vant";
-import { filterGoingTask, filterOtherTask, taskNameTranslate, taskNumTranslate } from "@/utils/utils"
+import { 
+  filterTask, 
+  filterGoingTask, 
+  filterStandardTask, 
+  taskNameTranslate, 
+  taskNumTranslate, 
+  getTimeFlag 
+} from "@/utils/utils"
 export default {
   name: "index",
   components: {
@@ -140,6 +145,7 @@ export default {
       show: false,
       showGuide: false,
       taskList: [],
+      planTaskList: [],
       goingTask: {}
     };
   },
@@ -154,15 +160,30 @@ export default {
     translateNum(num) {
       return taskNumTranslate(num)
     },
+    // 获取所有任务
     getTask() {
-      const token = "AF69227E49DBBE565A25394E"
-      this.$api.getTask({DeviceModel: '苹果系统',taskerModel: "试玩任务", appMenu: "标准任务", IsRec: 1}).then(res => {
-        this.taskList = filterOtherTask(res.result)
-        let list = filterGoingTask(res.result)
-        if(list.length !== 0) {
-          this.goingTask = filterGoingTask(res.result)[0]
-        }
+      this.$api.getTask(
+        {
+          DeviceModel: '苹果系统',
+          taskerModel: "试玩任务", 
+          appMenu: "", 
+          IsRec: 1
+        }).then(res => {
+          if(res.success) {
+            this.taskList = filterTask("标准任务", res.result, filterStandardTask)
+            this.goingTask = filterTask("标准任务", res.result, filterGoingTask)
+            this.planTaskList = filterTask("计划任务", res.result)
+            console.log(this.planTaskList);
+          }
       }) 
+    },
+
+    toDetail() {
+      this.$router.push("/task")
+    },
+    
+    getTimeFlag(data){
+      return getTimeFlag(data)
     },
     // 去提现
     toWithdrawal() {
@@ -182,12 +203,53 @@ export default {
     },
     // 活动banner事件结束-----------------------------
 
-    startTask() {
-      if(Object.keys(goingTask).length !== 0) {
-        this.show = true
-      } else {
-        this.$router.push("/task");
-      }
+    startTask(id) {
+      // let isBindMobile = this.isBindMobile()
+      // let isBindWechat = this.isBindWechat()
+      // if(!isBindMobile) {
+      //   this.$router.push("/bindPhone")
+      // } else if(!isBindWechat) {
+      //   this.$router.push("/bindWeChat")
+      // } else {
+      // }
+      this.snatchAppTask(id)
+    },
+
+    // 抢夺任务
+    snatchAppTask(id) {
+      let AppID = parseInt(id)
+      this.$api.snatchAppTask({AppID: AppID}).then(res => {
+        console.log(res);
+        if(res.success) {
+          if(res.result.isExist) {
+            
+          }
+        } else {
+          this.$toast(res.error)
+        }
+      })
+    },
+
+    isBindMobile() {
+      let result = this.$api.isBindMobile().then(res => {
+        if(res.success) {
+           return res.result
+        } else {
+          this.$toast(res.error)
+        }
+      })
+      return result
+    },
+    
+    isBindWechat() {
+      let result = this.$api.isBindWechat().then(res => {
+        if(res.success) {
+          return res.result
+        } else {
+          this.$toast(res.error)
+        }
+      })
+      return result
     },
     
     // 任务重复

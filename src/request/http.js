@@ -20,12 +20,13 @@ axios.interceptors.request.use(
 );
 axios.interceptors.response.use(
   response => {
-    if (response.result === 100) {
-      router.push("/login").catch(err => {});
-      return response;
-    } else {
-      return response;
-    }
+    // if (response.result === 100) {
+    //   router.push("/login").catch(err => {});
+    //   return response;
+    // } else {
+    //   return response;
+    // }
+    return response;
   },
   error => {
     // 错误提醒

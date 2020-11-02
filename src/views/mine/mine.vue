@@ -4,14 +4,14 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:47:04
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-10-15 09:26:31
+ * @LastEditTime: 2020-11-02 14:01:55
 -->
 <template>
   <div id="mine">
     <header @click="toUserInfo">
       <div class="info">
-        <img src="@/assets/images/head_img.png" />
-        <span>新手101154</span>
+        <img :src="userInfo.thumb != null ? userInfo.thumb : defaultHeaderImg" />
+        <span>{{userInfo.nickname}}</span>
       </div>
       <img src="@/assets/images/icon_more.png" />
     </header>
@@ -21,18 +21,18 @@
         <div class="my-assets-first">
           <div class="my-assets-first-left">
             <div class="text">今日收入</div>
-            <div class="number today-earnings">￥13.00</div>
+            <div class="number today-earnings">￥{{userInfo.totalAmount}}</div>
           </div>
           <div class="withdrawal-btn" @click="toWithdrawal">提现</div>
         </div>
         <div class="my-assets-second">
           <div>
             <span class="text">余额</span>
-            <span class="number my-balance">￥10.00</span>
+            <span class="number my-balance">￥{{userInfo.amount}}</span>
           </div>
           <div>
             <span class="text">累计收入</span>
-            <span class="number my-accumulated-income">￥10.00</span>
+            <span class="number my-accumulated-income">￥{{userInfo.totalAmount}}</span>
           </div>
         </div>
       </div>
@@ -70,6 +70,7 @@
 
 <script>
 import { Cell, CellGroup } from "vant";
+import defaultHeaderImg from "@/assets/images/head_img.png"
 export default {
   name: "mine",
   components: {
@@ -78,18 +79,19 @@ export default {
   },
   data() {
     return {
+      defaultHeaderImg,
       userInfo: {}
     };
   },
   created() {
-    // this.getInfo()
+    this.getInfo()
   },
   methods: {
     getInfo() {
-      const token = "AF69227E49DBBE565A25394E"
-      this.$api.getInfo({token: token}).then(res => {
-        let result = res.slice(10, res.length-1)
-        this.userInfo = JSON.parse(result)
+      this.$api.getUserInfo().then(res => {
+        this.userInfo = res.result
+        // let result = res.slice(10, res.length-1)
+        // this.userInfo = JSON.parse(result)
       }) 
     },
     toUserInfo() {

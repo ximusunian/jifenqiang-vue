@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 19:25:03
+ * @LastEditTime: 2020-11-02 13:44:18
 -->
 <template>
   <div id="app">
@@ -47,6 +47,6 @@ body,
     sans-serif;
 }
 .transparent {
-  // background-color: transparent
+  background-color: transparent
 }
 </style>
