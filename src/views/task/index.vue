@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 14:58:29
+ * @LastEditTime: 2020-11-03 17:11:21
 -->
 <template>
   <div id="task">
@@ -14,23 +14,25 @@
       <div class="countdown-box">
         <p class="countdown-box-title">抢到任务啦，快去完成吧</p>
         <div class="countdown-box-next">
-          <span class="countdown-box-next-num">￥0.50</span>
+          <span class="countdown-box-next-num">￥{{taskInfo.amount}}</span>
           <div class="countdown-box-next-clock">
             <img src="@/assets/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
-            <span class="countdown-box-next-clock-time">剩余55:30</span>
+            <span class="countdown-box-next-clock-time">
+              <span>剩余时间:</span><van-count-down :time="Math.ceil(taskInfo.expireSecs)*1000" format="mm:ss"/>
+              </span>
           </div>
         </div>
       </div>
       <div class="steps-box">
         <div class="step">
-          <img src="" class="app-logo"/>
+          <img :src="taskInfo.url" class="app-logo"/>
           <div class="step-text">
             <p>
               <span class="step-icon">1</span>
               <span>前往App Store 搜索：</span>
-              <span class="app-name">小兔快跑</span>
+              <span class="app-name">{{taskInfo.appName}}</span>
             </p>
-            <p>约在第<span class="app-rank">3</span>位，找到该图标应用下载安装</p>
+            <p>约在第<span class="app-rank">{{taskInfo.softRank}}</span>位，找到该图标应用下载安装</p>
           </div>
           <div class="step-btn" @click="showDownloadPop">如何下载？</div>
         </div>
@@ -39,7 +41,7 @@
           <div class="step-text">
             <p>
               <span class="step-icon">2</span>
-              <span>点击开始试玩，体验2分钟</span>
+              <span>点击开始试玩，体验{{translateMinutes(taskInfo.tryDate)}}分钟</span>
             </p>
             <p class="step-tips">打开应用时，必须“允许网络接入”</p>
           </div>
@@ -50,7 +52,7 @@
           <div class="step-text">
             <p>
               <span class="step-icon">3</span>
-              <span>试玩2分钟后，回本页领取奖励</span>
+              <span>试玩{{translateMinutes(taskInfo.tryDate)}}分钟后，回本页领取奖励</span>
             </p>
           </div>
           <div class="step-btn disabled">领取奖励</div>
@@ -67,10 +69,10 @@
         </div>
         <van-divider/>
         <div class="popup-next">
-          <img src="" />
+          <img :src="taskInfo.url" />
           <div>
             <p>请认准图标下载</p>
-            <p>约在第 <span class="app-rank">2</span> 位</p>
+            <p>约在第 <span class="app-rank">{{taskInfo.softRank}}</span> 位</p>
           </div>
         </div>
         <div class="popup-last" @click="closeDownloadPop">知道了</div>
@@ -86,10 +88,10 @@
         </div>
         <van-divider/>
         <div class="popup-next">
-          <img src="" />
+          <img :src="taskInfo.url" />
           <div>
             <p>App Store搜索</p>
-            <p>约在第 <span class="app-rank">2</span> 位</p>
+            <p>约在第 <span class="app-rank">{{taskInfo.softRank}}</span> 位</p>
           </div>
         </div>
         <div class="popup-last" @click="closePlayPop">知道了</div>
@@ -101,7 +103,7 @@
       <div class="result-popup">
         <img src="@/assets/images/gold_coins.png" class="top-img"/>
         <span class="result-tips">完成任务</span>
-        <p><span>￥</span>0.80</p>
+        <p><span>￥</span>{{taskInfo.amount}}</p>
         <span>已到账</span>
         <div class="operation">
           <img src="@/assets/images/invited_money.png" @click="showShareSheet"/>
@@ -132,7 +134,7 @@
 
 <script>
 import navBarTask from "@/components/NavBarTask"
-import { Divider, Popup, ShareSheet } from "vant"
+import { Divider, Popup, ShareSheet, CountDown  } from "vant"
 import weChat from '@/assets/images/weChat.png';
 import friend from '@/assets/images/friend.png';
 export default {
@@ -142,6 +144,7 @@ export default {
     [Divider.name]: Divider,
     [Popup.name]: Popup,
     [ShareSheet.name]: ShareSheet,
+    [CountDown.name]: CountDown
   },
   data() {
     return {
@@ -158,13 +161,44 @@ export default {
         'min-width': '71%',
         'width': 'auto',
         'background': 'none'
+      },
+      taskInfo: {
+        appName: "",
+        startContext: "",
+        sortContext: "",
+        tryContext: "",
+        fishContext: "",
+        hotContext: "",
+        uldContext: "",
+        strIndex: "",
+        sampThumb1: "",
+        isDisplay: 0,
+        softRank: "",
+        amount: "",
+        tryDate: "",
+        expireSecs: "",
+        url: ""
       }
     }
   },
   created() {
-
+    this.getTaskContext()
   },
   methods: {
+    getTaskContext() {
+      let data = this.$route.query.data
+      this.$api.getTaskContext({appId: data.appId}).then(res => {
+        if(res.success) {
+          this.taskInfo = res.result
+          this.taskInfo.url = data.thumb
+        }
+      })
+    },
+    // 时间转换
+    translateMinutes(data) {
+      let time = Number(parseInt(data))
+      return time / 60
+    },
     showDownloadPop() {
       this.show = true
     },
@@ -225,6 +259,7 @@ export default {
             margin-right: 0.1467rem;
           }
           &-time {
+            display: flex;
             color: $color33;
             font-size: 0.3733rem;
           }

@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 13:11:08
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 16:26:01
+ * @LastEditTime: 2020-11-03 14:49:01
 -->
 <template>
   <div id="navBarTask">
@@ -58,11 +58,18 @@ export default {
     },
     confirmAbandon(action, done) {
       if (action === 'confirm') {
-        setTimeout(done, 2000);
-        // this.onBack()
+        this.abortSession()
       } else {
         done();
       }
+    },
+    // 放弃任务
+    abortSession() {
+      this.$api.abortSession().then(res => {
+        if(res.success) {
+          this.onBack()
+        }
+      })
     }
   }
 }

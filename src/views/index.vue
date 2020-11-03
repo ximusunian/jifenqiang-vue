@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-02 18:26:52
+ * @LastEditTime: 2020-11-03 17:17:44
 -->
 <template>
   <div id="index">
@@ -37,7 +37,7 @@
 
     <!-- 进行中的任务 -->
     <div class="box" v-if="Object.keys(goingTask).length !== 0">
-      <div class="tasking" @click="toDetail()">
+      <div class="tasking" @click="toDetail(goingTask)">
         <div class="tasking-left">
           <img :src="goingTask.thumb" class="tasking-left-img" />
           <img
@@ -56,7 +56,7 @@
       <div class="fast-task" v-if="taskList.length != 0">
         <p class="task-title first">标准任务</p>
         <van-cell-group>
-          <van-cell center @click="startTask(item.appId)" v-for="(item, index) in taskList" :key="index">
+          <van-cell center @click="snatchAppTask(item)" v-for="(item, index) in taskList" :key="index">
             <template #title>
               <div class="task-list-item-left">
                 <img :src="item.thumb" />
@@ -95,7 +95,7 @@
               <div class="task-list-item-left">
                 <div class="task-list-item-left-box">
                   <span>{{getTimeFlag(item.creationtime)}}</span>
-                  <span>14:52</span>
+                  <span>{{getFormeDate(item.creationtime)}}</span>
                 </div>
                 <div class="task-list-item-left-desc">
                   <span>{{translateStr(item.appName)}}</span>
@@ -111,7 +111,7 @@
       </div>
     </div>
 
-    <van-dialog v-model="show" show-cancel-button confirmButtonColor="#FF5502" cancelButtonColor="#A7A7A7" confirm="confirmAbandon">
+    <van-dialog v-model="show" show-cancel-button confirmButtonColor="#FF5502" cancelButtonColor="#A7A7A7" @confirm="confirmAbandon">
       <p class="repeatTips">不能同时抢多个任务！是否放弃上个任务领取该任务？</p>
     </van-dialog>
 
@@ -127,6 +127,7 @@ import {
   filterStandardTask, 
   taskNameTranslate, 
   taskNumTranslate, 
+  getFormeDate,
   getTimeFlag 
 } from "@/utils/utils"
 export default {
@@ -146,7 +147,8 @@ export default {
       showGuide: false,
       taskList: [],
       planTaskList: [],
-      goingTask: {}
+      goingTask: {},
+      task: {}
     };
   },
   created() {
@@ -154,12 +156,6 @@ export default {
   },
   mounted() {},
   methods: {
-    translateStr(str) {
-      return taskNameTranslate(str)
-    },
-    translateNum(num) {
-      return taskNumTranslate(num)
-    },
     // 获取所有任务
     getTask() {
       this.$api.getTask(
@@ -173,56 +169,38 @@ export default {
             this.taskList = filterTask("标准任务", res.result, filterStandardTask)
             this.goingTask = filterTask("标准任务", res.result, filterGoingTask)
             this.planTaskList = filterTask("计划任务", res.result)
-            console.log(this.planTaskList);
           }
       }) 
     },
 
-    toDetail() {
-      this.$router.push("/task")
-    },
-    
-    getTimeFlag(data){
-      return getTimeFlag(data)
-    },
-    // 去提现
-    toWithdrawal() {
-      this.$router.push("/withdrawal");
+    // 去详情页
+    toDetail(data) {
+      this.$router.push({path: "/task", query: {data: data}})
     },
 
-    // 活动banner事件开始-----------------------------
+    // -----------------------------------活动banner事件开始------------------------------
     // 去邀请
     toInvite() {
       this.$router.push("/enlightening");
     },
     // 去浏览器打开外部活动界面
     toSafar() {
-      let url =
-        "https://engine.peonyta.com/index/activity?appKey=3FoScyQDrr1vudSLZzWTPHnRnUJ&adslotId=338168";
+      let url = "https://engine.peonyta.com/index/activity?appKey=3FoScyQDrr1vudSLZzWTPHnRnUJ&adslotId=338168";
       // window.webkit.messageHandlers.openSafari.postMessage(url)
     },
-    // 活动banner事件结束-----------------------------
-
-    startTask(id) {
-      // let isBindMobile = this.isBindMobile()
-      // let isBindWechat = this.isBindWechat()
-      // if(!isBindMobile) {
-      //   this.$router.push("/bindPhone")
-      // } else if(!isBindWechat) {
-      //   this.$router.push("/bindWeChat")
-      // } else {
-      // }
-      this.snatchAppTask(id)
-    },
+    // ------------------------------------活动banner事件结束-----------------------------
 
     // 抢夺任务
-    snatchAppTask(id) {
-      let AppID = parseInt(id)
+    snatchAppTask(item) {
+      console.log(item);
+      let AppID = parseInt(item.appId)
       this.$api.snatchAppTask({AppID: AppID}).then(res => {
-        console.log(res);
         if(res.success) {
-          if(res.result.isExist) {
-            
+          if(!res.result.isExist) {
+            this.task = item
+            this.show = true
+          } else {
+            this.$router.push({path: "/task", query: {data: item}})
           }
         } else {
           this.$toast(res.error)
@@ -230,6 +208,7 @@ export default {
       })
     },
 
+    // 是否绑定手机号
     isBindMobile() {
       let result = this.$api.isBindMobile().then(res => {
         if(res.success) {
@@ -241,6 +220,7 @@ export default {
       return result
     },
     
+    // 是否绑定微信
     isBindWechat() {
       let result = this.$api.isBindWechat().then(res => {
         if(res.success) {
@@ -251,21 +231,43 @@ export default {
       })
       return result
     },
-    
-    // 任务重复
-    repeatTask() {
-      this.show = true
+
+    // 去提现
+    toWithdrawal() {
+      this.$router.push("/withdrawal");
     },
 
     // 确实放弃之前任务，进行新任务
     confirmAbandon() {
-
+      this.$api.abortSession().then(res => {
+        if(res.success) {
+          this.snatchAppTask(this.task)
+        }
+      })
     },
 
     // 任务预告
     planToast() {
       Toast("任务还未开始哦");
-    }
+    },
+
+    // -------------------------------- 工具函数 --------------------------------------------------------
+    // 字符串转化
+    translateStr(str) {
+      return taskNameTranslate(str)
+    },
+    // 数字转化
+    translateNum(num) {
+      return taskNumTranslate(num)
+    },
+    // 日期格式化
+    getTimeFlag(data){
+      return getTimeFlag(data)
+    },
+    // 时间格式化
+    getFormeDate(data) {
+      return getFormeDate(data, "hh:mm")
+    },
   }
 };
 </script>
