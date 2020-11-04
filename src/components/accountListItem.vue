@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:51:07
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 09:25:56
+ * @LastEditTime: 2020-11-04 18:38:56
 -->
 <template>
   <div id="accountListItem">
@@ -49,18 +49,35 @@ export default {
   props: {
     type: {
       type: String,
-      default: "1"
+      default: 0
     }
   },
   data() {
-    return {};
+    return {
+      reqData: {
+        AmountSelectType: 0,
+        StartDate: "",
+        EndDate: "",
+        PageIndex: 1,
+        PageSize: 10
+      }
+    };
   },
   components: {
     [Cell.name]: Cell
   },
   watch: {},
+  created() {
+    this.getAmountDetailList()
+  },
   mounted() {},
-  methods: {}
+  methods: {
+    getAmountDetailList() {
+      this.$api.getAmountDetailList(this.reqData).then(res => {
+        console.log(res);
+      })
+    }
+  }
 };
 </script>
 

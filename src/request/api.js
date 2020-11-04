@@ -3,6 +3,7 @@ import Qs from "qs"
 const api = {
   // -----------------用户相关接口-------------------------
   getUserInfo: "/api/mobile/user/Get",                        // 获取用户信息
+  getAmountDetailList: "/api/mobile/app/GetAmountDetailList", // 获取账户明细
   isBindWechat: "/api/mobile/user/IsBindWechat",              // 判断是否绑定微信
   isBindMobile: "/api/mobile/user/IsBindMobile",              // 判断是否绑定手机号
 
@@ -26,6 +27,10 @@ const api = {
 
 const getUserInfo = params => {
   return get(api.getUserInfo, params)
+}
+
+const getAmountDetailList = params => {
+  return get(api.getAmountDetailList, params)
 }
 
 const isBindMobile = params => {
@@ -70,6 +75,7 @@ const test = params => {
 
 export default {
   getUserInfo,
+  getAmountDetailList,
   isBindMobile,
   isBindWechat,
 
@@ -80,6 +86,4 @@ export default {
   getInProgressTask,
   startAppTask,
   finishTask,
-
-  test
 };

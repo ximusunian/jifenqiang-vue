@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:14:57
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 19:31:16
+ * @LastEditTime: 2020-11-04 16:24:21
 -->
 <template>
   <div id="installSuccess">
@@ -20,7 +20,7 @@ export default {
   name: "installSuccess",
   data() {
     return {
-      openAppUrl: ""
+      openAppUrl: `${window.location.host}/#/`
     };
   },
   components: {},

@@ -61,7 +61,6 @@ module.exports = {
     proxy: {
       "/": {
         target: 'http://jfqapi.bktt1.top/',
-        // target: "192.168.0.100:12345",
         changeOrigin: true,
         pathRewrite: {
           // ['^/' + process.env.BASE_API]: ''

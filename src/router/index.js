@@ -7,13 +7,13 @@ const routes = [
   {
     path: "/",
     name: "index",
-    meta: { title: "首页", showTab: true },
+    meta: { title: "首页", showTab: true, showInstall: true },
     component: () => import("@/views/index.vue")
   },
   {
     path: "/enlightening",
     name: "enlightening",
-    meta: { title: "收徒赚钱", showTab: true },
+    meta: { title: "收徒赚钱", showTab: true, showInstall: true },
     component: () => import("@/views/enlightening.vue")
   },
   {
@@ -25,7 +25,7 @@ const routes = [
   {
     path: "/mine",
     name: "mine",
-    meta: { title: "我的", showTab: true },
+    meta: { title: "我的", showTab: true, showInstall: true },
     component: () => import("@/views/mine/mine.vue")
   },
   {

@@ -2,8 +2,9 @@ import Vue from "vue";
 import axios from "axios";
 // 设置全局axios的默认值
 axios.defaults.timeout = 10000;
+// axios.defaults.baseURL = 'http://jfqapi.bktt1.top/';
 axios.defaults.baseURL = '/';
-// axios.defaults.baseURL = process.env.NODE_ENV === "prod" ? "https://api.htyvip.com/huitongyi/" : "";
+// axios.defaults.baseURL = process.env.NODE_ENV === "prod" ? "http://jfqapi.bktt1.top/" : "/";
 
 // 拦截器
 axios.interceptors.request.use(

@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-03 17:17:44
+ * @LastEditTime: 2020-11-04 17:38:03
 -->
 <template>
   <div id="index">
@@ -70,20 +70,6 @@
               <span class="task-list-item-amount">+￥{{item.amount}}</span>
             </template>
           </van-cell>
-          <!-- <van-cell center @click="repeatTask">
-            <template #title>
-              <div class="task-list-item-left">
-                <img src="@/assets/images/3.png" />
-                <div class="task-list-item-left-desc">
-                  <span>名称</span>
-                  <span>剩余100份</span>
-                </div>
-              </div>
-            </template>
-            <template #right-icon>
-              <span class="task-list-item-amount">+￥0.80</span>
-            </template>
-          </van-cell> -->
         </van-cell-group>
       </div>
 
@@ -115,7 +101,6 @@
       <p class="repeatTips">不能同时抢多个任务！是否放弃上个任务领取该任务？</p>
     </van-dialog>
 
-    <van-overlay :show="showGuide"></van-overlay>
   </div>
 </template>
 
@@ -128,7 +113,7 @@ import {
   taskNameTranslate, 
   taskNumTranslate, 
   getFormeDate,
-  getTimeFlag 
+  getTimeFlag
 } from "@/utils/utils"
 export default {
   name: "index",
@@ -144,7 +129,6 @@ export default {
   data() {
     return {
       show: false,
-      showGuide: false,
       taskList: [],
       planTaskList: [],
       goingTask: {},
