@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 16:31:48
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 17:25:27
+ * @LastEditTime: 2020-11-05 19:04:21
 -->
 <template>
   <div id="userInfo">
@@ -14,33 +14,37 @@
       <van-cell>
         <template #title>
           <div class="cell-left">
-            <img src="https://thirdwx.qlogo.cn/mmopen/vi_32/tM9JJ9mpVp4PuO35iaLcUVWJxlsYIG0oFhAlg7HNZJmuBlBsBtdpxCffeNQHAPn0PNIBs0XLf06gvgNFXfsnJnQ/132" />
-            <span class="username">溪木素年</span>
+            <img :src="userInfo.thumb != null ? userInfo.thumb : defaultHeaderImg" />
+            <span class="username">{{userInfo.nickname}}</span>
           </div>
         </template>
       </van-cell>
       <van-cell title="用户ID">
         <template #right-icon>
           <div class="cell-right">
-            <span class="user-id">100158</span>
-            <span class="copy-btn" data-clipboard-action="copy" data-clipboard-text="100158" @click="copyId">复制</span>
+            <span class="user-id">{{userInfo.id}}</span>
+            <span class="copy-btn" data-clipboard-action="copy" :data-clipboard-text="userInfo.strWeChat == null ? '' : userInfo.strWeChat" @click="copyId">复制</span>
           </div>
         </template>
       </van-cell>
-      <van-cell title="绑定手机" value="18256049895" />
-      <van-cell title="绑定微信" value="溪木素年" />
+      <van-cell title="绑定手机" :value="userInfo.phoneNumber == null ? '未绑定' : userInfo.phoneNumber" />
+      <van-cell title="绑定微信" :value="userInfo.strWeChat == null ? '未绑定' : userInfo.strWeChat" />
     </van-cell-group>
   </div>
 </template>
 
 <script>
 import navBar from "@/components/NavBar";
+import defaultHeaderImg from "@/assets/images/head_img.png";
 import Clipboard from "clipboard";
 import { Cell, CellGroup, Toast } from "vant";
 export default {
   name: "userInfo",
   data() {
-    return {};
+    return {
+      userInfo: {},
+      defaultHeaderImg
+    };
   },
   components: {
     navBar,
@@ -49,6 +53,9 @@ export default {
     [Toast.name]: Toast,
   },
   watch: {},
+  created() {
+    this.userInfo = JSON.parse(localStorage.getItem("userInfo"))
+  },
   mounted() {},
   methods: {
     copyId() {

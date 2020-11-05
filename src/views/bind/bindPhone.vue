@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:48:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-26 15:06:44
+ * @LastEditTime: 2020-11-05 18:29:26
 -->
 <template>
   <div id="bindPhone">
@@ -38,7 +38,7 @@
           </template>
         </van-field>
         <div class="btn">
-          <van-button type="primary" :disabled="getCommitState()" @click="commit">注册登录</van-button>
+          <van-button type="primary" :disabled="getCommitState()" @click="commit">确认绑定</van-button>
         </div>
       </div>
     </div>
@@ -81,7 +81,14 @@ export default {
       if(!checkers.isPhone(this.phone)) {
         this.$toast('请输入正确的手机号')
       } else {
-
+        this.$api.sendCaptchaCode({mobile: this.phone}).then(res => {
+          console.log(res);
+          if(res.data.success) {
+            this.$toast("发送成功")
+          } else {
+            this.$toast(res.error.message)
+          }
+        })
       }
     },
     getCommitState() {
@@ -92,7 +99,21 @@ export default {
       }
     },
     commit() {
-      
+      let data = {
+        mobile: this.phone,
+        captcha: this.sms
+      }
+      this.$api.bindMobile(data).then(res => {
+        if(res.success) {
+          this.$toast("绑定成功");
+          localStorage.setItem("hasBindPhone", "true")
+          setTimeout(() => {
+            this.$router.replace("/bindWeChat")
+          }, 1200);
+        } else {
+          this.$toast(res.error)
+        }
+      })
     }
   }
 };

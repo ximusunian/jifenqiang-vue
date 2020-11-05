@@ -4,32 +4,20 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:15:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 09:25:42
+ * @LastEditTime: 2020-11-05 14:44:39
 -->
 <template>
   <div id="accountDetails">
     <navBar title="收益明细"></navBar>
 
-    <van-tabs v-model="active">
-      <van-tab title="全部">
-        <!-- <van-list v-model="loading" :finished="finished" finished-text="到底了"> -->
-        <van-cell-group>
-          <accountListItem type="1"></accountListItem>
-        </van-cell-group>
-        <!-- </van-list> -->
-      </van-tab>
-      <van-tab title="任务">
-        <van-cell-group>
-          <accountListItem type="1"></accountListItem>
-        </van-cell-group>
-      </van-tab>
-      <van-tab title="学徒">
-        <accountEmpty></accountEmpty>
-      </van-tab>
-      <van-tab title="提现">
-        <van-cell-group>
-          <accountListItem type="2"></accountListItem>
-        </van-cell-group>
+    <van-tabs v-model="reqData.AmountSelectType" @click="changeTab">
+      <van-tab :title="item" v-for="(item, index) in navTitle" :key="index">
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="min-height: 100vh;">
+          <van-list v-model="loading" :finished="finished" @load="onLoad()">
+            <accountListItem :type="reqData.AmountSelectType" v-for="(item, idx) in list" :key="idx" :data="item"></accountListItem>
+            <accountEmpty v-if="finished && !isLoading && list.length == 0"></accountEmpty>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -39,14 +27,24 @@
 import navBar from "@/components/NavBar";
 import accountEmpty from "@/components/accountEmpty";
 import accountListItem from "@/components/accountListItem";
-import { Tab, Tabs, List } from "vant";
+import { Tab, Tabs, List, PullRefresh,  } from "vant";
 export default {
   name: "accountDetails",
   data() {
     return {
       active: 0,
+      reqData: {
+        AmountSelectType: 0,
+        StartDate: "",
+        EndDate: "",
+        PageIndex: 1,
+        PageSize: 10
+      },
+      navTitle: ["全部", "任务", "学徒", "提现"],
+      isLoading: false,
       loading: false,
-      finished: false
+      finished: false,
+      list: []
     };
   },
   components: {
@@ -55,23 +53,43 @@ export default {
     accountListItem,
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
-    [List.name]: List
+    [List.name]: List,
+    [PullRefresh.name]: PullRefresh
   },
   watch: {},
   mounted() {},
   methods: {
+    onRefresh() {
+      this.reqData.PageIndex = 1
+      this.reqData.PageSize = 10
+      this.list = []
+      this.onLoad()
+    },
     onLoad() {
-      // setTimeout(() => {
-      //   for (let i = 0; i < 10; i++) {
-      //     this.list.push(this.list.length + 1);
-      //   }
-      //   // 加载状态结束
-      //   this.loading = false;
-      //   // 数据全部加载完成
-      //   if (this.list.length >= 40) {
-      //     this.finished = true;
-      //   }
-      // }, 1000);
+      this.$api.getAmountDetailList(this.reqData).then(res => {
+        if(res.success) {
+          this.isLoading = false
+          this.reqData.PageIndex += 1
+          if(this.reqData.PageIndex <= res.result.totalPage) {
+            this.finished = false
+          } else {
+            this.finished = true
+          }
+          if(res.result.items.length > 0) {
+            this.list = this.list.concat(res.result.items)
+          }
+        }
+      })
+    },
+    changeTab(name, title) {
+      this.list = []
+      this.reqData.PageIndex = 1
+      this.reqData.PageSize = 10
+      this.loading = true;
+      this.finished = false;
+      if(this.loading){
+        this.onLoad();
+      }
     }
   }
 };

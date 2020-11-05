@@ -96,5 +96,20 @@ const router = new VueRouter({
     }
   }
 });
+// router.beforeEach((to, from, next) => {
+//   const token = localStorage.getItem("token")
+//   if (token !== 'null' && token !== null) {
+//     if (to.path === '/') {
+      
+//     } else {
+//       next()
+//     }
+//   }
+//   else {
+//     next({
+//       path: '/login',
+//     })
+//   }
+// })
 
 export default router;

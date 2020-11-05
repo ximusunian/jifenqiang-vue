@@ -4,107 +4,234 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:47:04
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-02 14:01:55
+ * @LastEditTime: 2020-11-05 18:54:59
 -->
 <template>
   <div id="mine">
-    <header @click="toUserInfo">
-      <div class="info">
-        <img :src="userInfo.thumb != null ? userInfo.thumb : defaultHeaderImg" />
-        <span>{{userInfo.nickname}}</span>
-      </div>
-      <img src="@/assets/images/icon_more.png" />
-    </header>
-    
-    <div class="my-container">
-      <div class="my-assets">
-        <div class="my-assets-first">
-          <div class="my-assets-first-left">
-            <div class="text">今日收入</div>
-            <div class="number today-earnings">￥{{userInfo.totalAmount}}</div>
-          </div>
-          <div class="withdrawal-btn" @click="toWithdrawal">提现</div>
+    <div class="real" v-if="hasInstall">
+      <header @click="toUserInfo">
+        <div class="info">
+          <img
+            :src="userInfo.thumb != null ? userInfo.thumb : defaultHeaderImg"
+          />
+          <span>{{ userInfo.nickname == null ? userInfo.id :  userInfo.nickname}}</span>
         </div>
-        <div class="my-assets-second">
-          <div>
-            <span class="text">余额</span>
-            <span class="number my-balance">￥{{userInfo.amount}}</span>
+        <img src="@/assets/images/icon_more.png" />
+      </header>
+
+      <div class="my-container">
+        <div class="my-assets">
+          <div class="my-assets-first">
+            <div class="my-assets-first-left">
+              <div class="text">今日收入</div>
+              <div class="number today-earnings">
+                ￥{{ count.todayAmount }}
+              </div>
+            </div>
+            <div class="withdrawal-btn" @click="toWithdrawal">提现</div>
           </div>
-          <div>
-            <span class="text">累计收入</span>
-            <span class="number my-accumulated-income">￥{{userInfo.totalAmount}}</span>
+          <div class="my-assets-second">
+            <div>
+              <span class="text">余额</span>
+              <span class="number my-balance">￥{{ count.balance }}</span>
+            </div>
+            <div>
+              <span class="text">累计收入</span>
+              <span class="number my-accumulated-income"
+                >￥{{ count.totalAmount }}</span
+              >
+            </div>
           </div>
         </div>
+        <section>
+          <van-cell-group>
+            <van-cell
+              class="cell-item radius-top"
+              is-link
+              @click="toAccountDetails"
+            >
+              <template #title>
+                <div class="title">
+                  <img src="@/assets/images/purse.png" class="cell-icon" />
+                  <span>账户明细</span>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell class="cell-item" is-link @click="toHelpCenter">
+              <template #title>
+                <div class="title">
+                  <img
+                    src="@/assets/images/help_center.png"
+                    class="cell-icon"
+                  />
+                  <span>帮助中心</span>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell class="cell-item radius-bottom" title="" is-link>
+              <template #title>
+                <div class="title">
+                  <img src="@/assets/images/contact_us.png" class="cell-icon" />
+                  <span>联系我们</span>
+                </div>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </section>
       </div>
-      <section>
-        <van-cell-group>
-          <van-cell class="cell-item radius-top" is-link @click="toAccountDetails">
-            <template #title>
-              <div class="title">
-                <img src="@/assets/images/purse.png" class="cell-icon" />
-                <span>账户明细</span>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell class="cell-item" is-link @click="toHelpCenter">
-            <template #title>
-              <div class="title">
-                <img src="@/assets/images/help_center.png" class="cell-icon" />
-                <span>帮助中心</span>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell class="cell-item radius-bottom" title="" is-link>
-            <template #title>
-              <div class="title">
-                <img src="@/assets/images/contact_us.png" class="cell-icon" />
-                <span>联系我们</span>
-              </div>
-            </template>
-          </van-cell>
-        </van-cell-group>
-      </section>
     </div>
+
+    <div class="fake" v-else @click="showPop">
+      <header>
+        <div class="info">
+          <img
+            :src="defaultHeaderImg"
+          />
+          <span>请登录</span>
+        </div>
+        <img src="@/assets/images/icon_more.png" />
+      </header>
+
+      <div class="my-container">
+        <div class="my-assets">
+          <div class="my-assets-first">
+            <div class="my-assets-first-left">
+              <div class="text">今日收入</div>
+              <div class="number today-earnings">
+                ￥0.00
+              </div>
+            </div>
+            <div class="withdrawal-btn">提现</div>
+          </div>
+          <div class="my-assets-second">
+            <div>
+              <span class="text">余额</span>
+              <span class="number my-balance">￥0.00</span>
+            </div>
+            <div>
+              <span class="text">累计收入</span>
+              <span class="number my-accumulated-income"
+                >￥0.00</span
+              >
+            </div>
+          </div>
+        </div>
+        <section>
+          <van-cell-group>
+            <van-cell
+              class="cell-item radius-top"
+              is-link
+            >
+              <template #title>
+                <div class="title">
+                  <img src="@/assets/images/purse.png" class="cell-icon" />
+                  <span>账户明细</span>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell class="cell-item" is-link>
+              <template #title>
+                <div class="title">
+                  <img
+                    src="@/assets/images/help_center.png"
+                    class="cell-icon"
+                  />
+                  <span>帮助中心</span>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell class="cell-item radius-bottom" title="" is-link>
+              <template #title>
+                <div class="title">
+                  <img src="@/assets/images/contact_us.png" class="cell-icon" />
+                  <span>联系我们</span>
+                </div>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </section>
+      </div>
+    </div>
+
+    <van-overlay
+      :show="isShowPop"
+      @click="isShowPop = false"
+    >
+        <certification></certification>
+    </van-overlay>
   </div>
 </template>
 
 <script>
-import { Cell, CellGroup } from "vant";
-import defaultHeaderImg from "@/assets/images/head_img.png"
+import { Cell, CellGroup, Overlay } from "vant";
+import defaultHeaderImg from "@/assets/images/head_img.png";
+import certification from "@/components/certification"
 export default {
   name: "mine",
   components: {
+    certification,
     [Cell.name]: Cell,
+    [Overlay.name]: Overlay,
     [CellGroup.name]: CellGroup
   },
   data() {
     return {
+      hasInstall: true,         // 是否已经安装证书
+      isShowPop: false,         // 显示安装提示
       defaultHeaderImg,
-      userInfo: {}
+      userInfo: {},
+      count: {}
     };
   },
   created() {
-    this.getInfo()
+    let token = localStorage.getItem("token")
+    if(token == undefined || token == null || token == "") {
+      this.hasInstall = false
+    } else {
+      this.hasInstall = true
+      this.getInfo();
+      this.getTodayCount()
+    }
   },
   methods: {
+    // 是否展示安装证书提示
+    showPop() {
+      this.isShowPop = true
+    },
+    getTodayCount() {
+      this.$api.getTodayCount().then(res => {
+        if(res.success) {
+          this.count = res.result
+        } else {
+          this.$toast(res.error)
+        }
+      })
+    },
     getInfo() {
       this.$api.getUserInfo().then(res => {
-        this.userInfo = res.result
-        // let result = res.slice(10, res.length-1)
-        // this.userInfo = JSON.parse(result)
-      }) 
+        this.userInfo = res.result;
+        localStorage.setItem("userInfo",JSON.stringify(res.result))
+      });
     },
     toUserInfo() {
-      this.$router.push("/mine/userInfo")
+      this.$router.push("/mine/userInfo");
     },
     toWithdrawal() {
-      this.$router.push("/withdrawal")
+      let hasBindPhone = localStorage.getItem("hasBindPhone")
+      let hasBindWeChat = localStorage.getItem("hasBindWeChat")
+      if(hasBindPhone == "false") {
+        this.$router.push("/bindPhone")
+      } else if(hasBindWeChat == "false") {
+        this.$router.push("/bindWeChat")
+      } else {
+        this.$router.push("/withdrawal");
+      }
     },
     toAccountDetails() {
-      this.$router.push("/mine/accountDetails")
+      this.$router.push("/mine/accountDetails");
     },
     toHelpCenter() {
-      this.$router.push("/mine/helpCenter")
+      this.$router.push("/mine/helpCenter");
     }
   }
 };
@@ -112,7 +239,8 @@ export default {
 
 <style lang="scss" scoped>
 #mine {
-  font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, "sans-serif";
+  font-family: -apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, WenQuanYi Micro Hei, "sans-serif";
   min-height: 100vh;
   background: $localBg;
   header {

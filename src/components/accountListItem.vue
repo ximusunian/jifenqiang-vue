@@ -4,24 +4,11 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:51:07
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-04 18:38:56
+ * @LastEditTime: 2020-11-05 14:00:56
 -->
 <template>
   <div id="accountListItem">
-    <van-cell center v-if="type == 1">
-      <template #title>
-        <div class="all-list-left">
-          <p class="title">完成豆果美食-菜谱食谱视频菜谱大全</p>
-          <p class="time">2019-11-13 20:57:25</p>
-        </div>
-      </template>
-      <template #right-icon>
-        <div class="all-list-right">
-          <span class="num">+0.80</span>
-        </div>
-      </template>
-    </van-cell>
-    <van-cell center v-if="type == 2">
+    <van-cell center v-if="type == 3">
       <template #title>
         <div class="pay-list-left">
           <p class="title">
@@ -29,53 +16,60 @@
             <img src="@/assets/images/pay-wechat-icon.png" class="type-icon" />
             <span>微信</span>
           </p>
-          <p class="time">2019-11-13 20:57:25</p>
+          <p class="time">{{getFormeDate(data.creationTime)}}</p>
         </div>
       </template>
       <template #right-icon>
         <div class="pay-list-right">
-          <span class="num">-10.00</span>
+          <span class="num">{{data.affairs == 1? '+': '-'}}{{data.amount}}</span>
           <span class="statue">成功</span>
         </div>
       </template>
     </van-cell>
+    <van-cell center v-else>
+      <template #title>
+        <div class="all-list-left">
+          <p class="title">{{data.displayTitle}}</p>
+          <p class="time">{{getFormeDate(data.creationTime)}}</p>
+        </div>
+      </template>
+      <template #right-icon>
+        <div class="all-list-right">
+          <span class="num">{{data.affairs == 1? '+': '-'}}{{data.amount}}</span>
+        </div>
+      </template>
+    </van-cell>
+    
   </div>
 </template>
 
 <script>
 import { Cell } from "vant";
+import {getFormeDate} from "@/utils/utils";
 export default {
   name: "accountListItem",
   props: {
     type: {
       type: String,
       default: 0
+    },
+    data: {
+      type: Object,
+      default: {}
     }
   },
   data() {
-    return {
-      reqData: {
-        AmountSelectType: 0,
-        StartDate: "",
-        EndDate: "",
-        PageIndex: 1,
-        PageSize: 10
-      }
-    };
+    return {};
   },
   components: {
     [Cell.name]: Cell
   },
   watch: {},
-  created() {
-    this.getAmountDetailList()
-  },
+  created() {},
   mounted() {},
   methods: {
-    getAmountDetailList() {
-      this.$api.getAmountDetailList(this.reqData).then(res => {
-        console.log(res);
-      })
+    getFormeDate(data) {
+      getFormeDate(data, "yyyy-mm-dd hh:mm")
     }
   }
 };

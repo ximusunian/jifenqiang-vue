@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-03 17:11:21
+ * @LastEditTime: 2020-11-05 16:20:47
 -->
 <template>
   <div id="task">
@@ -128,6 +128,7 @@
       :options="options"
       title="邀请好友 收Ta为徒"
       description="更多收益 一起赚钱"
+      @select="share"
     />
   </div>
 </template>
@@ -221,6 +222,18 @@ export default {
     },
     errorContinuePlay() {
       this.errorPopupShow = false
+    },
+
+    share(option, index) {
+      let shareModel
+      if(option == "微信") {
+        shareModel = "weixin"
+      } else if(option == "朋友圈") {
+        shareModel = "friend"
+      }
+      let url = `${window.location.host}/#/shareDownload?`
+      let data = `type=${shareModel}&url=${url}`
+      window.webkit.messageHandlers.toShare.postMessage(data)
     }
   }
 }

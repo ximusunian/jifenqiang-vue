@@ -4,120 +4,359 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-04 17:38:03
+ * @LastEditTime: 2020-11-05 18:32:53
 -->
 <template>
   <div id="index">
-    <!-- 头部 -->
-    <header>
-      <img
-        src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
-      />
-      <div id="guide-box">
-        <div class="header-right" @click="toWithdrawal">
-          <span class="balance">￥0.10</span>
-          <span class="text">提现</span>
-          <van-icon name="arrow" size="16" />
+    <!-- 安装证书之后真是首页 -->
+    <div class="real" v-if="hasInstall">
+      <!-- 头部 -->
+      <header>
+        <img
+          src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
+        />
+        <div id="guide-box">
+          <div class="header-right" @click="toWithdrawal">
+            <span class="balance">￥0.10</span>
+            <span class="text">提现</span>
+            <van-icon name="arrow" size="16" />
+          </div>
+        </div>
+      </header>
+
+      <!-- 活动banner -->
+      <div class="activity-zone">
+        <div @click="toInvite">
+          <img src="@/assets/images/invite_banner.png" />
+        </div>
+        <div @click="toSafar">
+          <img src="@/assets/images/lucky_draw_banner.png" />
         </div>
       </div>
-    </header>
 
-    <!-- 活动banner -->
-    <div class="activity-zone">
-      <div @click="toInvite">
-        <img src="@/assets/images/invite_banner.png" />
-      </div>
-      <div @click="toSafar">
-        <img src="@/assets/images/lucky_draw_banner.png" />
-      </div>
-    </div>
+      <!-- 通知 -->
+      <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o"
+        >任务随时更新；每天15点-20点大量任务上线</van-notice-bar
+      >
 
-    <!-- 通知 -->
-    <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o">任务随时更新；每天15点-20点大量任务上线</van-notice-bar>
-
-    <!-- 进行中的任务 -->
-    <div class="box" v-if="Object.keys(goingTask).length !== 0">
-      <div class="tasking" @click="toDetail(goingTask)">
-        <div class="tasking-left">
-          <img :src="goingTask.thumb" class="tasking-left-img" />
-          <img
-            src="@/assets/images/alarm_clock.gif"
-            class="tasking-left-clock"
-          />
-          <span>任务进行中...</span>
+      <!-- 进行中的任务 -->
+      <div class="box" v-if="Object.keys(goingTask).length !== 0">
+        <div class="tasking" @click="toDetail(goingTask)">
+          <div class="tasking-left">
+            <img :src="goingTask.thumb" class="tasking-left-img" />
+            <img
+              src="@/assets/images/alarm_clock.gif"
+              class="tasking-left-clock"
+            />
+            <span>任务进行中...</span>
+          </div>
+          <div class="tasking-right">+￥{{ goingTask.amount }}</div>
         </div>
-        <div class="tasking-right">+￥{{goingTask.amount}}</div>
       </div>
+
+      <!-- 任务 -->
+      <div class="container">
+        <!-- 快速任务 -->
+        <div class="fast-task" v-if="taskList.length != 0">
+          <p class="task-title first">标准任务</p>
+          <van-cell-group>
+            <van-cell
+              center
+              @click="snatchAppTask(item)"
+              v-for="(item, index) in taskList"
+              :key="index"
+            >
+              <template #title>
+                <div class="task-list-item-left">
+                  <img :src="item.thumb" />
+                  <div class="task-list-item-left-desc">
+                    <span>{{ translateStr(item.appName) }}</span>
+                    <span>剩余{{ translateNum(item.kucun) }}份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥{{ item.amount }}</span>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </div>
+
+        <div class="plan-task" v-if="planTaskList.length != 0">
+          <p class="task-title">任务预告</p>
+          <van-cell-group>
+            <van-cell
+              center
+              @click="planToast"
+              v-for="(item, index) in planTaskList"
+              :key="index"
+            >
+              <template #title>
+                <div class="task-list-item-left">
+                  <div class="task-list-item-left-box">
+                    <span>{{ getTimeFlag(item.creationtime) }}</span>
+                    <span>{{ getFormeDate(item.creationtime) }}</span>
+                  </div>
+                  <div class="task-list-item-left-desc">
+                    <span>{{ translateStr(item.appName) }}</span>
+                    <span>剩余{{ translateNum(item.kucun) }}份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">￥{{ item.amount }}</span>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </div>
+      </div>
+
+      <van-dialog
+        v-model="show"
+        show-cancel-button
+        confirmButtonColor="#FF5502"
+        cancelButtonColor="#A7A7A7"
+        @confirm="confirmAbandon"
+      >
+        <p class="repeatTips">
+          不能同时抢多个任务！是否放弃上个任务领取该任务？
+        </p>
+      </van-dialog>
     </div>
 
-    <!-- 任务 -->
-    <div class="container">
-      <!-- 快速任务 -->
-      <div class="fast-task" v-if="taskList.length != 0">
-        <p class="task-title first">标准任务</p>
-        <van-cell-group>
-          <van-cell center @click="snatchAppTask(item)" v-for="(item, index) in taskList" :key="index">
-            <template #title>
-              <div class="task-list-item-left">
-                <img :src="item.thumb" />
-                <div class="task-list-item-left-desc">
-                  <span>{{translateStr(item.appName)}}</span>
-                  <span>剩余{{translateNum(item.kucun)}}份</span>
-                </div>
-              </div>
-            </template>
-            <template #right-icon>
-              <span class="task-list-item-amount">+￥{{item.amount}}</span>
-            </template>
-          </van-cell>
-        </van-cell-group>
+    <!-- 未安装之前展示的假页面 -->
+    <div class="fake" v-else @click="showPop">
+      <header>
+        <img
+          src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
+        />
+        <div id="guide-box">
+          <div class="header-right">
+            <span class="balance">￥0.00</span>
+            <span class="text">提现</span>
+            <van-icon name="arrow" size="16" />
+          </div>
+        </div>
+      </header>
+      <div class="activity-zone">
+        <div>
+          <img src="@/assets/images/invite_banner.png" />
+        </div>
+        <div>
+          <img src="@/assets/images/lucky_draw_banner.png" />
+        </div>
       </div>
+      <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o"
+        >任务随时更新；每天15点-20点大量任务上线</van-notice-bar
+      >
+      <div class="container">
+        <!-- 快速任务 -->
+        <div class="fast-task">
+          <p class="task-title first">标准任务</p>
+          <van-cell-group>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/1.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>唐***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥1.50</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/3.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>花***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥2.00</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/2.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>惠***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥1.50</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/7.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>贷***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥1.80</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/4.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>封***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥2.00</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/5.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>诛***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥2.00</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <img src="@/assets/images/6.png" />
+                  <div class="task-list-item-left-desc">
+                    <span>健***</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">+￥1.50</span>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </div>
 
-      <div class="plan-task" v-if="planTaskList.length != 0">
-        <p class="task-title">任务预告</p>
-        <van-cell-group>
-          <van-cell center @click="planToast" v-for="(item, index) in planTaskList" :key="index">
-            <template #title>
-              <div class="task-list-item-left">
-                <div class="task-list-item-left-box">
-                  <span>{{getTimeFlag(item.creationtime)}}</span>
-                  <span>{{getFormeDate(item.creationtime)}}</span>
+        <div class="plan-task">
+          <p class="task-title">任务预告</p>
+          <van-cell-group>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <div class="task-list-item-left-box">
+                    <span>明天</span>
+                    <span>13:00</span>
+                  </div>
+                  <div class="task-list-item-left-desc">
+                    <span>天****</span>
+                    <span>剩余100+份</span>
+                  </div>
                 </div>
-                <div class="task-list-item-left-desc">
-                  <span>{{translateStr(item.appName)}}</span>
-                  <span>剩余{{translateNum(item.kucun)}}份</span>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">￥1.50</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <div class="task-list-item-left-box">
+                    <span>明天</span>
+                    <span>13:00</span>
+                  </div>
+                  <div class="task-list-item-left-desc">
+                    <span>网****</span>
+                    <span>剩余100+份</span>
+                  </div>
                 </div>
-              </div>
-            </template>
-            <template #right-icon>
-              <span class="task-list-item-amount">￥{{item.amount}}</span>
-            </template>
-          </van-cell>
-        </van-cell-group>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">￥2.00</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <div class="task-list-item-left-box">
+                    <span>明天</span>
+                    <span>13:00</span>
+                  </div>
+                  <div class="task-list-item-left-desc">
+                    <span>王****</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">￥1.80</span>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template #title>
+                <div class="task-list-item-left">
+                  <div class="task-list-item-left-box">
+                    <span>明天</span>
+                    <span>13:00</span>
+                  </div>
+                  <div class="task-list-item-left-desc">
+                    <span>三****</span>
+                    <span>剩余100+份</span>
+                  </div>
+                </div>
+              </template>
+              <template #right-icon>
+                <span class="task-list-item-amount">￥1.50</span>
+              </template>
+            </van-cell>
+          </van-cell-group>
+        </div>
       </div>
     </div>
-
-    <van-dialog v-model="show" show-cancel-button confirmButtonColor="#FF5502" cancelButtonColor="#A7A7A7" @confirm="confirmAbandon">
-      <p class="repeatTips">不能同时抢多个任务！是否放弃上个任务领取该任务？</p>
-    </van-dialog>
+    
+    <van-overlay
+      :show="isShowPop"
+      @click="isShowPop = false"
+    >
+        <certification></certification>
+    </van-overlay>
 
   </div>
 </template>
 
 <script>
 import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay, Dialog } from "vant";
-import { 
-  filterTask, 
-  filterGoingTask, 
-  filterStandardTask, 
-  taskNameTranslate, 
-  taskNumTranslate, 
+import {
+  filterTask,
+  filterGoingTask,
+  filterStandardTask,
+  taskNameTranslate,
+  taskNumTranslate,
   getFormeDate,
   getTimeFlag
-} from "@/utils/utils"
+} from "@/utils/utils";
+import certification from "@/components/certification"
 export default {
   name: "index",
   components: {
+    certification,
     [Icon.name]: Icon,
     [NoticeBar.name]: NoticeBar,
     [Cell.name]: Cell,
@@ -128,38 +367,67 @@ export default {
   },
   data() {
     return {
+      hasInstall: true,         // 是否已经安装证书
+      isShowPop: false,         // 显示安装提示
+      hasBindWeChat: false,     // 是否绑定微信
+      hasBindPhone: false,      // 是否绑定手机号
       show: false,
-      taskList: [],
-      planTaskList: [],
-      goingTask: {},
-      task: {}
+      taskList: [],             // 任务列表
+      planTaskList: [],         // 计划任务列表
+      goingTask: {},            // 进行中的任务
+      task: {}                  // 
     };
   },
   created() {
-    this.getTask()
+    let token = localStorage.getItem("token")
+    let hasBindPhone = localStorage.getItem("hasBindPhone")
+    let hasBindWeChat = localStorage.getItem("hasBindWeChat")
+    if(token == undefined || token == null || token == "") {
+      this.hasInstall = false
+    } else {
+      this.hasInstall = true
+      this.getTask();
+      this.isBindMobile()
+      this.isBindWechat()
+    }
+    
   },
   mounted() {},
   methods: {
+    // 是否展示安装证书提示
+    showPop() {
+      this.isShowPop = true
+    },
+    
     // 获取所有任务
     getTask() {
-      this.$api.getTask(
-        {
-          DeviceModel: '苹果系统',
-          taskerModel: "试玩任务", 
-          appMenu: "", 
+      this.$api
+        .getTask({
+          DeviceModel: "苹果系统",
+          taskerModel: "试玩任务",
+          appMenu: "",
           IsRec: 1
-        }).then(res => {
-          if(res.success) {
-            this.taskList = filterTask("标准任务", res.result, filterStandardTask)
-            this.goingTask = filterTask("标准任务", res.result, filterGoingTask)
-            this.planTaskList = filterTask("计划任务", res.result)
+        })
+        .then(res => {
+          if (res.success) {
+            this.taskList = filterTask(
+              "标准任务",
+              res.result,
+              filterStandardTask
+            );
+            this.goingTask = filterTask(
+              "标准任务",
+              res.result,
+              filterGoingTask
+            );
+            this.planTaskList = filterTask("计划任务", res.result);
           }
-      }) 
+        });
     },
 
     // 去详情页
     toDetail(data) {
-      this.$router.push({path: "/task", query: {data: data}})
+      this.$router.push({ path: "/task", query: { data: data } });
     },
 
     // -----------------------------------活动banner事件开始------------------------------
@@ -169,7 +437,8 @@ export default {
     },
     // 去浏览器打开外部活动界面
     toSafar() {
-      let url = "https://engine.peonyta.com/index/activity?appKey=3FoScyQDrr1vudSLZzWTPHnRnUJ&adslotId=338168";
+      let url =
+        "https://engine.peonyta.com/index/activity?appKey=3FoScyQDrr1vudSLZzWTPHnRnUJ&adslotId=338168";
       // window.webkit.messageHandlers.openSafari.postMessage(url)
     },
     // ------------------------------------活动banner事件结束-----------------------------
@@ -177,57 +446,63 @@ export default {
     // 抢夺任务
     snatchAppTask(item) {
       console.log(item);
-      let AppID = parseInt(item.appId)
-      this.$api.snatchAppTask({AppID: AppID}).then(res => {
-        if(res.success) {
-          if(!res.result.isExist) {
-            this.task = item
-            this.show = true
+      let AppID = parseInt(item.appId);
+      this.$api.snatchAppTask({ AppID: AppID }).then(res => {
+        if (res.success) {
+          if (!res.result.isExist) {
+            this.task = item;
+            this.show = true;
           } else {
-            this.$router.push({path: "/task", query: {data: item}})
+            this.$router.push({ path: "/task", query: { data: item } });
           }
         } else {
-          this.$toast(res.error)
+          this.$toast(res.error);
         }
-      })
+      });
     },
 
     // 是否绑定手机号
     isBindMobile() {
-      let result = this.$api.isBindMobile().then(res => {
-        if(res.success) {
-           return res.result
+      this.$api.isBindMobile().then(res => {
+        if (res.success) {
+          this.hasBindPhone = res.result
+          localStorage.setItem("hasBindPhone", res.result)
         } else {
-          this.$toast(res.error)
+          this.$toast(res.error);
         }
-      })
-      return result
+      });
     },
-    
+
     // 是否绑定微信
     isBindWechat() {
-      let result = this.$api.isBindWechat().then(res => {
-        if(res.success) {
-          return res.result
+      this.$api.isBindWechat().then(res => {
+        if (res.success) {
+          this.hasBindWeChat = res.result
+          localStorage.setItem("hasBindWeChat", res.result)
         } else {
-          this.$toast(res.error)
+          this.$toast(res.error);
         }
-      })
-      return result
+      });
     },
 
     // 去提现
     toWithdrawal() {
-      this.$router.push("/withdrawal");
+      if(!this.hasBindPhone) {
+        this.$router.push("/bindPhone")
+      } else if(!this.hasBindWeChat) {
+        this.$router.push("/bindWeChat")
+      } else {
+        this.$router.push("/withdrawal");
+      }
     },
 
     // 确实放弃之前任务，进行新任务
     confirmAbandon() {
       this.$api.abortSession().then(res => {
-        if(res.success) {
-          this.snatchAppTask(this.task)
+        if (res.success) {
+          this.snatchAppTask(this.task);
         }
-      })
+      });
     },
 
     // 任务预告
@@ -238,20 +513,20 @@ export default {
     // -------------------------------- 工具函数 --------------------------------------------------------
     // 字符串转化
     translateStr(str) {
-      return taskNameTranslate(str)
+      return taskNameTranslate(str);
     },
     // 数字转化
     translateNum(num) {
-      return taskNumTranslate(num)
+      return taskNumTranslate(num);
     },
     // 日期格式化
-    getTimeFlag(data){
-      return getTimeFlag(data)
+    getTimeFlag(data) {
+      return getTimeFlag(data);
     },
     // 时间格式化
     getFormeDate(data) {
-      return getFormeDate(data, "hh:mm")
-    },
+      return getFormeDate(data, "hh:mm");
+    }
   }
 };
 </script>
@@ -454,7 +729,7 @@ export default {
     box-shadow: 0px 0px 0 800px rgba(0, 0, 0, 0.6);
     z-index: 2;
   }
-  
+
   .repeatTips {
     padding: 0.52rem 0.933rem 0.493rem;
     color: $color33;

@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:20:41
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-26 13:37:12
+ * @LastEditTime: 2020-11-05 17:35:17
 -->
 <template>
   <div id="bindWeChat">
@@ -13,7 +13,7 @@
     <div class="container">
       <p>为保证收益及时提现</p>
       <p style="margin-top: 0.2rem">请绑定微信</p>
-      <div class="bind-btn">绑定微信</div>
+      <div class="bind-btn" @click="bindWeChat">绑定微信</div>
     </div>
 
   </div>
@@ -30,8 +30,20 @@ export default {
     navBar
   },
   watch: {},
+  created() {
+    window["successBind"] = function() {
+      let state = JSON.parse(data)
+      if(state.state) {
+        this.$router.replace("/")
+      }
+    }
+  },
   mounted() {},
-  methods: {}
+  methods: {
+    bindWeChat() {
+      window.webkit.messageHandlers.wxLogin.postMessage({})
+    },
+  }
 };
 </script>
 
