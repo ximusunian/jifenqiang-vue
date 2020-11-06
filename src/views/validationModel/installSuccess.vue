@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:14:57
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-04 16:24:21
+ * @LastEditTime: 2020-11-06 19:58:07
 -->
 <template>
   <div id="installSuccess">
@@ -25,6 +25,11 @@ export default {
   },
   components: {},
   watch: {},
+  created() {
+    let udid = this.$route.query.udid
+    let packages = this.$route.query.package
+    this.openAppUrl = `${packages}:/?udid:${udid}`
+  },
   mounted() {},
   methods: {
     toApp() {

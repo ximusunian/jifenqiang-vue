@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:48:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 18:29:26
+ * @LastEditTime: 2020-11-06 09:15:07
 -->
 <template>
   <div id="bindPhone">
@@ -33,7 +33,7 @@
           <template #button>
             <div class="field-right">
               <span class="line"></span>
-              <van-button size="small" type="primary" :disabled="getSmsState()" @click="sendSms">获取验证码</van-button>
+              <van-button size="small" type="primary" :disabled="getSmsState()" @click="sendSms">{{code_btn_txt}}</van-button>
             </div>
           </template>
         </van-field>
@@ -56,7 +56,9 @@ export default {
   data() {
     return {
       phone: "",
-      sms: ""
+      sms: "",
+      countdown: 60,  // 倒计时
+      code_btn_txt: '获取验证码',
     };
   },
   components: {
@@ -74,7 +76,11 @@ export default {
       if(this.phone === '') {
         return true
       } else {
-        return false
+        if (this.code_btn_txt === '获取验证码') {
+          return false
+        } else {
+          return true
+        }
       }
     },
     sendSms() {
@@ -85,6 +91,7 @@ export default {
           console.log(res);
           if(res.data.success) {
             this.$toast("发送成功")
+            this.setCodeTime()
           } else {
             this.$toast(res.error.message)
           }
@@ -114,7 +121,20 @@ export default {
           this.$toast(res.error)
         }
       })
-    }
+    },
+    // 验证码倒计时
+    setCodeTime() {
+      if (this.countdown === 1) {
+        this.countdown = 60
+        this.code_btn_txt = '获取验证码'
+      } else {
+        this.countdown -= 1
+        this.code_btn_txt = (this.countdown).toString() + '秒后重发'
+        this.timer = setTimeout(function () {
+          this.setCodeTime()
+        }.bind(this), 1000)
+      }
+    },
   }
 };
 </script>

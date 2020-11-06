@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:20:41
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 17:35:17
+ * @LastEditTime: 2020-11-06 15:44:37
 -->
 <template>
   <div id="bindWeChat">
@@ -31,11 +31,9 @@ export default {
   },
   watch: {},
   created() {
-    window["successBind"] = function() {
-      let state = JSON.parse(data)
-      if(state.state) {
-        this.$router.replace("/")
-      }
+    let _this = this
+    window["successBind"] = function(data) {
+      _this.successBind(data)
     }
   },
   mounted() {},
@@ -43,6 +41,12 @@ export default {
     bindWeChat() {
       window.webkit.messageHandlers.wxLogin.postMessage({})
     },
+    successBind(data) {
+      let state = JSON.parse(data)
+      if(state.state == "true") {
+        this.$router.replace("/")
+      }
+    }
   }
 };
 </script>

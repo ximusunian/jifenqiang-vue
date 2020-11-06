@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 18:32:53
+ * @LastEditTime: 2020-11-06 20:14:02
 -->
 <template>
   <div id="index">
@@ -12,7 +12,7 @@
     <div class="real" v-if="hasInstall">
       <!-- 头部 -->
       <header>
-        <img
+        <img lazy-load
           src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
         />
         <div id="guide-box">
@@ -62,7 +62,7 @@
           <van-cell-group>
             <van-cell
               center
-              @click="snatchAppTask(item)"
+              @click="checkApp(item)"
               v-for="(item, index) in taskList"
               :key="index"
             >
@@ -127,7 +127,7 @@
     <!-- 未安装之前展示的假页面 -->
     <div class="fake" v-else @click="showPop">
       <header>
-        <img
+        <van-image lazy-load
           src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
         />
         <div id="guide-box">
@@ -342,7 +342,7 @@
 </template>
 
 <script>
-import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay, Dialog } from "vant";
+import { Icon, NoticeBar, Cell, CellGroup, Toast, Overlay, Dialog, Lazyload, Image as VanImage } from "vant";
 import {
   filterTask,
   filterGoingTask,
@@ -363,7 +363,8 @@ export default {
     [CellGroup.name]: CellGroup,
     [Toast.name]: Toast,
     [Overlay.name]: Overlay,
-    [Dialog.Component.name]: Dialog.Component
+    [Dialog.Component.name]: Dialog.Component,
+    [VanImage.name]: VanImage
   },
   data() {
     return {
@@ -375,6 +376,7 @@ export default {
       taskList: [],             // 任务列表
       planTaskList: [],         // 计划任务列表
       goingTask: {},            // 进行中的任务
+      stagingTask: {},
       task: {}                  // 
     };
   },
@@ -390,7 +392,10 @@ export default {
       this.isBindMobile()
       this.isBindWechat()
     }
-    
+    let _this = this
+    window["checkAppCallBack"] = function(data) {
+      _this.checkAppCallBack(data)
+    }
   },
   mounted() {},
   methods: {
@@ -427,7 +432,13 @@ export default {
 
     // 去详情页
     toDetail(data) {
-      this.$router.push({ path: "/task", query: { data: data } });
+      if(!this.hasBindPhone) {
+        this.$router.push("/bindPhone")
+      } else if(!this.hasBindWeChat) {
+        this.$router.push("/bindWeChat")
+      } else {
+        this.$router.push({ path: "/task", query: { data: data } });
+      }
     },
 
     // -----------------------------------活动banner事件开始------------------------------
@@ -444,22 +455,56 @@ export default {
     // ------------------------------------活动banner事件结束-----------------------------
 
     // 抢夺任务
-    snatchAppTask(item) {
-      console.log(item);
-      let AppID = parseInt(item.appId);
+    checkApp(item) {
+      if(!this.hasBindPhone) {
+        this.$router.push("/bindPhone")
+      } else if(!this.hasBindWeChat) {
+        this.$router.push("/bindWeChat")
+      } else {
+        let {appId, packername, processname, appModel} = item
+        let options = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}`
+        this.stagingTask = item
+        window.webkit.messageHandlers.checkApp.postMessage(options)
+      }
+    },
+
+    // 检测app回调
+    checkAppCallBack(data) {
+      let jsonData = JSON.parse(data)
+      if (jsonData["isfind"] == 'false') {
+        this.saveFinishKey(jsonData.appid)
+        this.$toast("您已经做过这个任务了")
+      } else if (jsonData["isfind"] == 'true') {
+        this.task = this.stagingTask
+        this.snatchAppTask(jsonData.appid)
+      }
+    },
+
+    saveFinishKey(id) {
+      let appid = id
+      this.$api.saveFinishKey({appid: appid}).then(res => {
+        if(res.success) {
+          this.getTask()
+        }
+      })
+    },
+
+    // 开始任务
+    snatchAppTask(appId) {
+      let AppID = appId;
       this.$api.snatchAppTask({ AppID: AppID }).then(res => {
         if (res.success) {
           if (!res.result.isExist) {
-            this.task = item;
             this.show = true;
           } else {
-            this.$router.push({ path: "/task", query: { data: item } });
+            this.$router.push({ path: "/task", query: { data: this.task } });
           }
         } else {
           this.$toast(res.error);
         }
       });
     },
+
 
     // 是否绑定手机号
     isBindMobile() {
@@ -500,7 +545,7 @@ export default {
     confirmAbandon() {
       this.$api.abortSession().then(res => {
         if (res.success) {
-          this.snatchAppTask(this.task);
+          this.checkApp(this.task);
         }
       });
     },

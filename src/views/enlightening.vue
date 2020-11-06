@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:46:29
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 16:27:12
+ * @LastEditTime: 2020-11-06 10:12:47
 -->
 <template>
   <div id="enlightening">
@@ -159,7 +159,8 @@ export default {
         todayNum: 0,
         childrenCount: 0,
         todayAmount: 0,
-        scAmount: 1
+        scAmount: 1,
+        shareInfo: {}
       }
     };
   },
@@ -176,6 +177,7 @@ export default {
     } else {
       this.hasInstall = true
       this.getInvitePageCount()
+      this.getShareInfo()
     }
   },
   mounted() {},
@@ -197,15 +199,25 @@ export default {
       this.showShare = true;
     },
     share(option, index) {
-      let shareModel
-      if(option == "微信") {
+      let shareModel = ""
+      if(option.name == "微信") {
         shareModel = "weixin"
-      } else if(option == "朋友圈") {
+      } else if(option.name == "朋友圈") {
         shareModel = "friend"
       }
-      let url = `${window.location.host}/#/shareDownload?`
+      let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
+      let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
       let data = `type=${shareModel}&url=${url}`
+      console.log(data);
       window.webkit.messageHandlers.toShare.postMessage(data)
+      this.showShare = false
+    },
+    getShareInfo() {
+      this.$api.getShareInfo().then(res => {
+        if(res.success) {
+          this.shareInfo = res.result
+        }
+      })
     }
   }
 };

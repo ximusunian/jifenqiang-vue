@@ -3,8 +3,8 @@ import axios from "axios";
 import { Toast } from "vant"
 // 设置全局axios的默认值
 axios.defaults.timeout = 10000;
-axios.defaults.baseURL = 'http://jfqapi.bktt1.top/';
-// axios.defaults.baseURL = '/';
+// axios.defaults.baseURL = 'http://jfqapi.bktt1.top/';
+axios.defaults.baseURL = '/';
 // axios.defaults.baseURL = process.env.NODE_ENV === "prod" ? "http://jfqapi.bktt1.top/" : "/";
 
 // 拦截器

@@ -2,13 +2,14 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import { Field, CellGroup, Cell, Button, Dialog } from "vant";
+import { Field, CellGroup, Cell, Button, Dialog,  Lazyload } from "vant";
 
 Vue.use(Cell);
 Vue.use(CellGroup);
 Vue.use(Button);
 Vue.use(Field);
 Vue.use(Dialog);
+Vue.use(Lazyload)
 
 import "amfe-flexible/index.js";
 

@@ -18,10 +18,13 @@ const api = {
   getInProgressTask: "/api/mobile/app/GetInProgressTask",     // 获取正在执行中的任务
   startAppTask: "/api/mobile/app/StartAppTask",               // 开始任务
   finishTask: "/api/mobile/app/FinishTask",                   // 完成任务
+  saveFinishKey: "/api/mobile/app/SaveFinishKey",             // 保存用户已完成的任务
 
   // -------------------绑定相关接口-------------------------
   sendCaptchaCode: "/api/mobile/user/SendCaptchaCode",        // 发送短信验证码
-  bindMobile: "/api/mobile/user/BindMobile",                          // 绑定手机号码
+  bindMobile: "/api/mobile/user/BindMobile",                  // 绑定手机号码
+
+  getShareInfo: "/api/mobile/app/GetShareInfo",               // 获取分享数据配置
   
 };
 
@@ -81,6 +84,14 @@ const finishTask = params => {
   return get(api.finishTask, params)
 }
 
+const saveFinishKey = params => {
+  return axios({
+    url: api.saveFinishKey,
+    method: "post",
+    params: params
+  })
+}
+
 const sendCaptchaCode = params => {
   return axios({
     url: api.sendCaptchaCode,
@@ -91,6 +102,10 @@ const sendCaptchaCode = params => {
 
 const bindMobile = params => {
   return post(api.bindMobile, params)
+}
+
+const getShareInfo = params => {
+  return get(api.getShareInfo, params)
 }
 
 export default {
@@ -108,7 +123,9 @@ export default {
   getInProgressTask,
   startAppTask,
   finishTask,
+  saveFinishKey,
 
   sendCaptchaCode,
-  bindMobile
+  bindMobile,
+  getShareInfo
 };

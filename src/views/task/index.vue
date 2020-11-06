@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 16:20:47
+ * @LastEditTime: 2020-11-06 19:06:38
 -->
 <template>
   <div id="task">
@@ -45,7 +45,7 @@
             </p>
             <p class="step-tips">打开应用时，必须“允许网络接入”</p>
           </div>
-          <div class="step-btn" @click="showPlayPop">开始试玩</div>
+          <div class="step-btn" @click="startTask">开始试玩</div>
         </div>
         <van-divider class="divider"/>
         <div class="step">
@@ -55,7 +55,7 @@
               <span>试玩{{translateMinutes(taskInfo.tryDate)}}分钟后，回本页领取奖励</span>
             </p>
           </div>
-          <div class="step-btn disabled">领取奖励</div>
+          <div :class="taskInfo.isInProgress?'step-btn' :'step-btn disabled'" @click="toReceiveAward">领取奖励</div>
         </div>
       </div>
     </div>
@@ -116,7 +116,7 @@
     <van-popup v-model="errorPopupShow" round :close-on-click-overlay=false :style="style">
       <div class="result-error-popup">
         <p class="result-tips">时间还不够哦~</p>
-        <p>还需试玩 <span class="continue-time">2分钟52秒</span></p>
+        <p>还需试玩 <span class="continue-time">{{remainingTime}}</span></p>
         <img src="@/assets/images/gold_coins.png" class="app-img"/>
         <img src="@/assets/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
       </div>
@@ -178,16 +178,31 @@ export default {
         amount: "",
         tryDate: "",
         expireSecs: "",
-        url: ""
-      }
+        url: "",
+        isInProgress: false
+      },
+      taskAll: {},
+      remainingTime: ''
     }
   },
   created() {
     this.getTaskContext()
+    let _this = this
+    window["startCallBack"] = function(result) {
+      _this.startCallBack(result)
+    }
+    window["tryAppBack"] = function(data) {
+      _this.tryAppBack(data)
+    }
+
+    window["finishApplicationCallBack"] = function(data) {
+      _this.receiveAwardCallBack(data)
+    }
   },
   methods: {
     getTaskContext() {
       let data = this.$route.query.data
+      this.taskAll = this.$route.query.data
       this.$api.getTaskContext({appId: data.appId}).then(res => {
         if(res.success) {
           this.taskInfo = res.result
@@ -206,8 +221,69 @@ export default {
     closeDownloadPop() {
       this.show = false
     },
-    showPlayPop() {
-      this.playShow = true
+
+    // 开始任务
+    startTask() {
+      let {appId, appKey, isKeep} = this.taskInfo
+      let str = `type=download&appid=${appId}&appkey=${appKey}&iskeep=${isKeep}`
+      window.webkit.messageHandlers.startTask.postMessage(str)
+    },
+
+    startCallBack(result) {
+      let data = JSON.parse(result)
+      if(data.state == "true"){
+        this.wake()
+      }
+    },
+
+    wake() {
+      let {packername, processname } = this.taskAll
+      let {appId, appModel, appKey, isKeep} = this.taskInfo
+      let data = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}&appkey=${appKey}&iskeep=${isKeep}`
+      window.webkit.messageHandlers.toWake.postMessage(data)
+    },
+
+    // 开始任务客户端回调
+    tryAppBack(state) {
+      let data = JSON.parse(state)
+      if(data.state === "true") {
+        this.taskInfo.isInProgress = true
+      } else {
+        this.playShow = true
+      }
+    },
+
+    toReceiveAward() {
+      let {packername, processname } = this.taskAll
+      let {appId, appModel, appKey, isKeep, tryDate} = this.taskInfo
+      let data = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}&appkey=${appKey}&iskeep=${isKeep}&trydate=${tryDate}`
+      window.webkit.messageHandlers.receiveAward.postMessage(data)
+    },
+
+    receiveAwardCallBack(data) {
+      let result = JSON.parse(data)
+      let tips = result.tips 
+      if(tips.indexOf('还未达到任务时间')!=-1) {
+        let time = result.time
+        this.remainingTime = this.timeTranslate(time)
+        this.errorPopupShow = true
+      } else if((tips.indexOf('success')!=-1)){
+        this.successPopupShow = true
+      } else{
+        this.$toast(tips)
+      }
+    },
+
+    // 试玩时间处理
+    timeTranslate(date) {
+      let oldTime = Number(date)
+      if(oldTime < 60) {
+        return oldTime + "秒"
+      } else if(oldTime === 60) {
+        return "1分钟"
+      } else {
+        return parseInt(oldTime/60) + "分钟" + oldTime%60 + "秒"
+      }
     },
     closePlayPop() {
       this.playShow = false
@@ -224,6 +300,7 @@ export default {
       this.errorPopupShow = false
     },
 
+    // 分享
     share(option, index) {
       let shareModel
       if(option == "微信") {

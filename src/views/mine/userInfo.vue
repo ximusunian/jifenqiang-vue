@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 16:31:48
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 19:04:21
+ * @LastEditTime: 2020-11-06 10:08:49
 -->
 <template>
   <div id="userInfo">
@@ -28,7 +28,7 @@
         </template>
       </van-cell>
       <van-cell title="绑定手机" :value="userInfo.phoneNumber == null ? '未绑定' : userInfo.phoneNumber" />
-      <van-cell title="绑定微信" :value="userInfo.strWeChat == null ? '未绑定' : userInfo.strWeChat" />
+      <van-cell title="绑定微信" :value="userInfo.nickname == null ? '未绑定' : userInfo.nickname" />
     </van-cell-group>
   </div>
 </template>
