@@ -49,8 +49,14 @@ const routes = [
   {
     path: "/withdrawal",
     name: "withdrawal",
-    meta: { title: "微信提现", showTab: false },
+    meta: { title: "支付宝提现", showTab: false },
     component: () => import("@/views/withdrawal/withdrawal.vue")
+  },
+  {
+    path: "/withdrawalSuccess",
+    name: "withdrawalSuccess",
+    mate: { title : "提现成功", showTab: false},
+    component: () => import("@/views/withdrawal/withdrawalSuccess.vue")
   },
   // tag: 绑定手机及微信页面路由
   {

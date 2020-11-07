@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:51:07
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 14:00:56
+ * @LastEditTime: 2020-11-07 17:59:29
 -->
 <template>
   <div id="accountListItem">
@@ -21,7 +21,7 @@
       </template>
       <template #right-icon>
         <div class="pay-list-right">
-          <span class="num">{{data.affairs == 1? '+': '-'}}{{data.amount}}</span>
+          <span class="num">{{data.affairs == 1? '+': '-'}}{{data.amount? tFixed(data.amount): "0.00"}}</span>
           <span class="statue">成功</span>
         </div>
       </template>
@@ -35,7 +35,7 @@
       </template>
       <template #right-icon>
         <div class="all-list-right">
-          <span class="num">{{data.affairs == 1? '+': '-'}}{{data.amount}}</span>
+          <span class="num">{{data.affairs == 1? '+': '-'}}{{data.amount? tFixed(data.amount): "0.00"}}</span>
         </div>
       </template>
     </van-cell>
@@ -45,12 +45,12 @@
 
 <script>
 import { Cell } from "vant";
-import {getFormeDate} from "@/utils/utils";
+import {getFormeDate, tFixed} from "@/utils/utils";
 export default {
   name: "accountListItem",
   props: {
     type: {
-      type: String,
+      type: Number,
       default: 0
     },
     data: {
@@ -69,7 +69,10 @@ export default {
   mounted() {},
   methods: {
     getFormeDate(data) {
-      getFormeDate(data, "yyyy-mm-dd hh:mm")
+     return getFormeDate(data)
+    },
+    tFixed(num) {
+      return tFixed(num)
     }
   }
 };

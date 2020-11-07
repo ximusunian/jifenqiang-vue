@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-06 20:14:02
+ * @LastEditTime: 2020-11-07 18:27:53
 -->
 <template>
   <div id="index">
@@ -17,7 +17,7 @@
         />
         <div id="guide-box">
           <div class="header-right" @click="toWithdrawal">
-            <span class="balance">￥0.10</span>
+            <span class="balance">￥{{userInfo.amount? tFixed(userInfo.amount): "0.00"}}</span>
             <span class="text">提现</span>
             <van-icon name="arrow" size="16" />
           </div>
@@ -50,7 +50,7 @@
             />
             <span>任务进行中...</span>
           </div>
-          <div class="tasking-right">+￥{{ goingTask.amount }}</div>
+          <div class="tasking-right">+￥{{ tFixed(goingTask.amount) }}</div>
         </div>
       </div>
 
@@ -76,7 +76,7 @@
                 </div>
               </template>
               <template #right-icon>
-                <span class="task-list-item-amount">+￥{{ item.amount }}</span>
+                <span class="task-list-item-amount">+￥{{ tFixed(item.amount) }}</span>
               </template>
             </van-cell>
           </van-cell-group>
@@ -104,7 +104,7 @@
                 </div>
               </template>
               <template #right-icon>
-                <span class="task-list-item-amount">￥{{ item.amount }}</span>
+                <span class="task-list-item-amount">￥{{ tFixed(item.amount) }}</span>
               </template>
             </van-cell>
           </van-cell-group>
@@ -349,8 +349,9 @@ import {
   filterStandardTask,
   taskNameTranslate,
   taskNumTranslate,
-  getFormeDate,
-  getTimeFlag
+  getTime,
+  getTimeFlag,
+  tFixed
 } from "@/utils/utils";
 import certification from "@/components/certification"
 export default {
@@ -377,7 +378,8 @@ export default {
       planTaskList: [],         // 计划任务列表
       goingTask: {},            // 进行中的任务
       stagingTask: {},
-      task: {}                  // 
+      task: {},                 // 
+      userInfo: {}
     };
   },
   created() {
@@ -388,7 +390,8 @@ export default {
       this.hasInstall = false
     } else {
       this.hasInstall = true
-      this.getTask();
+      this.getInfo()
+      this.getTask()
       this.isBindMobile()
       this.isBindWechat()
     }
@@ -430,6 +433,12 @@ export default {
         });
     },
 
+    getInfo() {
+      this.$api.getUserInfo().then(res => {
+        this.userInfo = res.result;
+        localStorage.setItem("userInfo",JSON.stringify(res.result))
+      });
+    },
     // 去详情页
     toDetail(data) {
       if(!this.hasBindPhone) {
@@ -437,7 +446,7 @@ export default {
       } else if(!this.hasBindWeChat) {
         this.$router.push("/bindWeChat")
       } else {
-        this.$router.push({ path: "/task", query: { data: data } });
+        this.$router.push({ path: "/task", query: { data: JSON.stringify(data) } });
       }
     },
 
@@ -481,6 +490,7 @@ export default {
     },
 
     saveFinishKey(id) {
+      console.log("测试是否");
       let appid = id
       this.$api.saveFinishKey({appid: appid}).then(res => {
         if(res.success) {
@@ -497,7 +507,7 @@ export default {
           if (!res.result.isExist) {
             this.show = true;
           } else {
-            this.$router.push({ path: "/task", query: { data: this.task } });
+            this.$router.push({ path: "/task", query: { data: JSON.stringify(this.task) } });
           }
         } else {
           this.$toast(res.error);
@@ -570,7 +580,10 @@ export default {
     },
     // 时间格式化
     getFormeDate(data) {
-      return getFormeDate(data, "hh:mm");
+      return getTime(data, "hh:mm");
+    },
+    tFixed(num) {
+      return tFixed(num)
     }
   }
 };

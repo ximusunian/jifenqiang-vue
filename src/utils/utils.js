@@ -60,25 +60,31 @@ const filterTask = (type, list, fn) => {
  * @param {String} fmt  需要转换的格式
  * @return {String} 转换之后的时间
  */
-const getFormeDate = (time, fmt) => {
+const getFormeDate = (time) => {
+  let data = time.substr(0, 19)
+  let st = new Date(Date.parse(data))
+  let stY = st.getFullYear()
+  let stM = st.getMonth()+1
+  let stD = st.getDate()
+  let stH = st.getHours()
+  let stMs = st.getMinutes()
+  let stS = st.getSeconds()
+  let fmt = `${stY}-${stM}-${stD} ${stH}:${stMs}:${stS}`
+  return fmt;
+}
+
+const getTime = (time) => {
   let st = new Date(time)
-  if (/(y+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, (newDate.getFullYear() + '').substr(4 - RegExp.$1.length));
-  }
   let o = {
-    'M+': st.getMonth() + 1,
-    'd+': st.getDate(),
-    'h+': st.getHours(),
-    'm+': st.getMinutes(),
-    's+': st.getSeconds()
+    'stH': st.getHours(),
+    'stM': st.getMinutes(),
   };
   for (let k in o) {
-    if (new RegExp(`(${k})`).test(fmt)) {
-      let str = o[k] + '';
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : ('00' + str).substr(str.length));
+    if(o[k] == 0) {
+      o[k] = "00"
     }
   }
-  return fmt;
+  return `${o.stH}:${o.stM}`
 }
 
 /**
@@ -121,12 +127,25 @@ const taskNumTranslate = (num) => {
   }
 }
 
+const tFixed = (num) => {
+  if(num != undefined && num != null && num != "") {
+    if(num == 0) {
+      return 0.00
+    } else {
+      return num.toFixed(2)
+    }
+  } else {
+    return 0.00
+  }
+}
 export {
   filterGoingTask,
   filterStandardTask,
   filterTask,
   getFormeDate,
+  getTime,
   getTimeFlag,
   taskNameTranslate,
-  taskNumTranslate
+  taskNumTranslate,
+  tFixed
 }

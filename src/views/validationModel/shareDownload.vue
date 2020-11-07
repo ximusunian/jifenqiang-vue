@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 20:02:55
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-26 13:38:11
+ * @LastEditTime: 2020-11-07 17:55:14
 -->
 <template>
   <div id="shareDownload">
@@ -174,8 +174,9 @@ export default {
   name: "shareDownload",
   data() {
     return {
-      ui: "",
-      show: false
+      uid: "",
+      show: false,
+      downloadUrl: "",
     };
   },
   components: {
@@ -188,19 +189,32 @@ export default {
   created() {
     let id = this.$route.query.uid;
     this.uid = `**uid=${id}**`;
-    let clipboard = new Clipboard(".wrapper");
+    let clipboard = new Clipboard(".wrapper", {
+      text:() => {
+          return this.uid;
+        }
+    });
     clipboard.on("success", function() {
       console.log("success");
     });
     clipboard.on("error", function() {
       console.log("error");
     });
+
+    this.getInstallUrl()
   },
   mounted() {},
   methods: {
     copy() {},
+    getInstallUrl() {
+      this.$api.getInstallUrl().then(res => {
+        if(res.success) {
+          this.downloadUrl = res.result
+        }
+      })
+    },
     toDownload() {
-      // console.log(11);
+       window.location = this.downloadUrl
     }
   }
 };

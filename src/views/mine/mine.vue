@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:47:04
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 18:54:59
+ * @LastEditTime: 2020-11-07 11:17:55
 -->
 <template>
   <div id="mine">
@@ -25,7 +25,7 @@
             <div class="my-assets-first-left">
               <div class="text">今日收入</div>
               <div class="number today-earnings">
-                ￥{{ count.todayAmount }}
+                ￥{{ count.todayAmount?tFixed(count.todayAmount) : "0.00" }}
               </div>
             </div>
             <div class="withdrawal-btn" @click="toWithdrawal">提现</div>
@@ -33,12 +33,12 @@
           <div class="my-assets-second">
             <div>
               <span class="text">余额</span>
-              <span class="number my-balance">￥{{ count.balance }}</span>
+              <span class="number my-balance">￥{{ count.balance?tFixed(count.balance) : "0.00" }}</span>
             </div>
             <div>
               <span class="text">累计收入</span>
               <span class="number my-accumulated-income"
-                >￥{{ count.totalAmount }}</span
+                >￥{{ count.totalAmount ? tFixed(count.totalAmount) : "0.00" }}</span
               >
             </div>
           </div>
@@ -163,9 +163,10 @@
 </template>
 
 <script>
-import { Cell, CellGroup, Overlay } from "vant";
+import { Cell, CellGroup, Form, Overlay } from "vant";
 import defaultHeaderImg from "@/assets/images/head_img.png";
 import certification from "@/components/certification"
+import {tFixed} from "@/utils/utils";
 export default {
   name: "mine",
   components: {
@@ -232,6 +233,9 @@ export default {
     },
     toHelpCenter() {
       this.$router.push("/mine/helpCenter");
+    },
+    tFixed(num) {
+      return tFixed(num)
     }
   }
 };

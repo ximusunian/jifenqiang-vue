@@ -9,6 +9,8 @@ const api = {
   isBindWechat: "/api/mobile/user/IsBindWechat",              // 判断是否绑定微信
   isBindMobile: "/api/mobile/user/IsBindMobile",              // 判断是否绑定手机号
   getInvitePageCount: "/api/mobile/app/GetInvitePageCount",   // 邀请页面
+  requestPay: "/api/mobile/app/RequestPay",                   // 提现
+  getAliPayInfo: "/api/mobile/app/AlipayInfo",                // 获取绑定的支付宝信息
 
   // ------------------任务相关接口-------------------------
   getTask: "/api/mobile/app/GetAppList",                      // 获取任务列表
@@ -24,8 +26,9 @@ const api = {
   sendCaptchaCode: "/api/mobile/user/SendCaptchaCode",        // 发送短信验证码
   bindMobile: "/api/mobile/user/BindMobile",                  // 绑定手机号码
 
+  // -------------------配置相关接口-------------------------
   getShareInfo: "/api/mobile/app/GetShareInfo",               // 获取分享数据配置
-  
+  getInstallUrl: "/api/NonAuth/InstallUrl",                      // 安装地址
 };
 
 // const uploadImg = params => {
@@ -108,6 +111,18 @@ const getShareInfo = params => {
   return get(api.getShareInfo, params)
 }
 
+const requestPay = params => {
+  return post(api.requestPay, params)
+}
+
+const getAliPayInfo = params => {
+  return get(api.getAliPayInfo, params)
+}
+
+const getInstallUrl = params => {
+  return get(api.getInstallUrl, params)
+}
+
 export default {
   getUserInfo,
   getTodayCount,
@@ -115,6 +130,7 @@ export default {
   isBindMobile,
   isBindWechat,
   getInvitePageCount,
+  getAliPayInfo,
 
   getTask,
   snatchAppTask,
@@ -127,5 +143,8 @@ export default {
 
   sendCaptchaCode,
   bindMobile,
-  getShareInfo
+  getShareInfo,
+
+  requestPay,
+  getInstallUrl
 };

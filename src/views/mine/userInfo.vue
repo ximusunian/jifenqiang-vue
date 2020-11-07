@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 16:31:48
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-06 10:08:49
+ * @LastEditTime: 2020-11-07 15:33:14
 -->
 <template>
   <div id="userInfo">
@@ -23,7 +23,7 @@
         <template #right-icon>
           <div class="cell-right">
             <span class="user-id">{{userInfo.id}}</span>
-            <span class="copy-btn" data-clipboard-action="copy" :data-clipboard-text="userInfo.strWeChat == null ? '' : userInfo.strWeChat" @click="copyId">复制</span>
+            <span class="copy-btn" @click="copyId">复制</span>
           </div>
         </template>
       </van-cell>
@@ -59,7 +59,12 @@ export default {
   mounted() {},
   methods: {
     copyId() {
-      let clipboard = new Clipboard(".copy-btn");
+      let _this = this
+      let clipboard = new Clipboard(".copy-btn", {
+        text:() => {
+          return _this.userInfo.id
+        }
+      });
       clipboard.on("success", function() {
         Toast("已复制到剪切板");
       });

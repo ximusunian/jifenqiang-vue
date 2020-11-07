@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-06 19:06:38
+ * @LastEditTime: 2020-11-07 18:54:29
 -->
 <template>
   <div id="task">
@@ -41,7 +41,7 @@
           <div class="step-text">
             <p>
               <span class="step-icon">2</span>
-              <span>点击开始试玩，体验{{translateMinutes(taskInfo.tryDate)}}分钟</span>
+              <span>点击开始试玩，体验{{translateMinutes(taskInfo.tryDate)}}</span>
             </p>
             <p class="step-tips">打开应用时，必须“允许网络接入”</p>
           </div>
@@ -52,10 +52,10 @@
           <div class="step-text">
             <p>
               <span class="step-icon">3</span>
-              <span>试玩{{translateMinutes(taskInfo.tryDate)}}分钟后，回本页领取奖励</span>
+              <span>试玩{{translateMinutes(taskInfo.tryDate)}}后，回本页领取奖励</span>
             </p>
           </div>
-          <div :class="taskInfo.isInProgress?'step-btn' :'step-btn disabled'" @click="toReceiveAward">领取奖励</div>
+          <div :class="canReceiveAward?'step-btn' :'step-btn disabled'" @click="toReceiveAward">领取奖励</div>
         </div>
       </div>
     </div>
@@ -116,7 +116,10 @@
     <van-popup v-model="errorPopupShow" round :close-on-click-overlay=false :style="style">
       <div class="result-error-popup">
         <p class="result-tips">时间还不够哦~</p>
-        <p>还需试玩 <span class="continue-time">{{remainingTime}}</span></p>
+        <p style="display: flex; align-item: center;margin-top: 0.2rem">
+          <span style="margin-right: 0.2rem">还需试玩</span>
+          <van-count-down :time="Math.ceil(remainingTime)*1000" format="mm分ss秒"></van-count-down>
+        </p>
         <img src="@/assets/images/gold_coins.png" class="app-img"/>
         <img src="@/assets/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
       </div>
@@ -129,6 +132,7 @@
       title="邀请好友 收Ta为徒"
       description="更多收益 一起赚钱"
       @select="share"
+      @cancel="toBack"
     />
   </div>
 </template>
@@ -179,14 +183,16 @@ export default {
         tryDate: "",
         expireSecs: "",
         url: "",
-        isInProgress: false
       },
       taskAll: {},
-      remainingTime: ''
+      remainingTime: '',
+      canReceiveAward: this.$store.state.status,
+      shareInfo: {}
     }
   },
   created() {
     this.getTaskContext()
+    this.getShareInfo()
     let _this = this
     window["startCallBack"] = function(result) {
       _this.startCallBack(result)
@@ -200,9 +206,10 @@ export default {
     }
   },
   methods: {
+    // 获取任务详情
     getTaskContext() {
-      let data = this.$route.query.data
-      this.taskAll = this.$route.query.data
+      let data = JSON.parse(this.$route.query.data) 
+      this.taskAll = JSON.parse(this.$route.query.data)
       this.$api.getTaskContext({appId: data.appId}).then(res => {
         if(res.success) {
           this.taskInfo = res.result
@@ -213,8 +220,13 @@ export default {
     // 时间转换
     translateMinutes(data) {
       let time = Number(parseInt(data))
-      return time / 60
+      if(time > 60) {
+        return time / 60 + "分钟"
+      } else {
+        return time + "秒"
+      }
     },
+    
     showDownloadPop() {
       this.show = true
     },
@@ -229,6 +241,7 @@ export default {
       window.webkit.messageHandlers.startTask.postMessage(str)
     },
 
+    // 开始任务回调
     startCallBack(result) {
       let data = JSON.parse(result)
       if(data.state == "true"){
@@ -236,6 +249,7 @@ export default {
       }
     },
 
+    // 唤起app
     wake() {
       let {packername, processname } = this.taskAll
       let {appId, appModel, appKey, isKeep} = this.taskInfo
@@ -247,12 +261,14 @@ export default {
     tryAppBack(state) {
       let data = JSON.parse(state)
       if(data.state === "true") {
-        this.taskInfo.isInProgress = true
+        this.$store.commit("updateStatus", true)
+        this.canReceiveAward = true
       } else {
         this.playShow = true
       }
     },
 
+    // 领取奖励
     toReceiveAward() {
       let {packername, processname } = this.taskAll
       let {appId, appModel, appKey, isKeep, tryDate} = this.taskInfo
@@ -260,14 +276,16 @@ export default {
       window.webkit.messageHandlers.receiveAward.postMessage(data)
     },
 
+    // 领取奖励回调
     receiveAwardCallBack(data) {
       let result = JSON.parse(data)
       let tips = result.tips 
       if(tips.indexOf('还未达到任务时间')!=-1) {
         let time = result.time
-        this.remainingTime = this.timeTranslate(time)
+        // this.remainingTime = this.timeTranslate(time)
+        this.remainingTime = time
         this.errorPopupShow = true
-      } else if((tips.indexOf('success')!=-1)){
+      } else if((tips.indexOf('提交成功')!=-1)){
         this.successPopupShow = true
       } else{
         this.$toast(tips)
@@ -292,25 +310,40 @@ export default {
       this.successPopupShow = false
       this.showShare = true
     },
+
     continuePlay() {
       this.successPopupShow = false
+      this.$store.commit("updateStatus", false)
       this.$router.back()
     },
+
     errorContinuePlay() {
       this.errorPopupShow = false
     },
 
+    // 获取分享信息
+    getShareInfo() {
+      this.$api.getShareInfo().then(res => {
+        if(res.success) {
+          this.shareInfo = res.result
+        }
+      })
+    },
     // 分享
     share(option, index) {
-      let shareModel
-      if(option == "微信") {
+      let shareModel = ""
+      if(option.name == "微信") {
         shareModel = "weixin"
-      } else if(option == "朋友圈") {
+      } else if(option.name == "朋友圈") {
         shareModel = "friend"
       }
-      let url = `${window.location.host}/#/shareDownload?`
+      let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
+      let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
       let data = `type=${shareModel}&url=${url}`
       window.webkit.messageHandlers.toShare.postMessage(data)
+    },
+    toBack() {
+      this.$router.back()
     }
   }
 }
@@ -523,6 +556,10 @@ export default {
       color: $color33;
     }
     .continue-time {
+      font-size: 0.9rem;
+      color: #EA4203;
+    }
+    .van-count-down {
       font-size: 0.9rem;
       color: #EA4203;
     }

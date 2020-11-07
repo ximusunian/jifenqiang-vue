@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:46:29
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-06 10:12:47
+ * @LastEditTime: 2020-11-07 18:13:38
 -->
 <template>
   <div id="enlightening">
@@ -208,7 +208,6 @@ export default {
       let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
       let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
       let data = `type=${shareModel}&url=${url}`
-      console.log(data);
       window.webkit.messageHandlers.toShare.postMessage(data)
       this.showShare = false
     },

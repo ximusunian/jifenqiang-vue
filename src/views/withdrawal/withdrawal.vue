@@ -4,16 +4,20 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 09:44:47
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-25 13:27:01
+ * @LastEditTime: 2020-11-07 14:35:59
 -->
 <template>
   <div id="withdrawal">
-    <navBar title="微信提现"></navBar>
+    <navBar title="支付宝提现"></navBar>
 
     <div class="container">
       <div class="withdrawal-box">
         <p class="label">姓名</p>
-        <van-field v-model="value" placeholder="请输入姓名" />
+        <van-field v-if="isSucceed" v-model="param.realName" placeholder="请输入姓名" readonly/>
+        <van-field v-else v-model="param.realName" placeholder="请输入姓名"/>
+        <p class="label" style="margin-top: 0.5rem">支付宝账号</p>
+        <van-field v-if="isSucceed" v-model="param.alipayChar" placeholder="请输入支付宝账号" readonly/>
+        <van-field v-else v-model="param.alipayChar" placeholder="请输入支付宝账号"/>
         <p class="title">提现金额</p>
         <div class="withdrawal-num-list">
           <span v-for="(item, index) in numberList"
@@ -24,10 +28,10 @@
           </span>
         </div>
         <div class="withdrawal-info">
-          <span>实际支出 ￥<span class="number">{{param.value}}</span></span>
-          <span>我的余额 ￥<span class="number">1.20</span></span>
+          <span>实际支出 ￥<span class="number">{{param.amount}}</span></span>
+          <span>我的余额 ￥<span class="number">{{amount}}</span></span>
         </div>
-        <div class="withdrawal-btn">提现</div>
+        <div class="withdrawal-btn" @click="toWithdrawal">提现</div>
         <div class="withdrawal-tips">
           <p>1. 每天只能提现一笔</p>
           <p>2. 提现需要1个工作日审核后到账</p>
@@ -44,7 +48,6 @@ export default {
   name: "withdrawal",
   data() {
     return {
-      value: '',
       numberList:[
         {
           value: 10,
@@ -76,30 +79,70 @@ export default {
         },
       ],
       param: {
-        value: 0
-      }
+        amount: 0,
+        payType: 0,
+        realName: "",
+        alipayChar: "",
+        remark: "",
+      },
+      password: "",
+      amount: 0,
+      isSucceed: false,
     };
   },
   components: {
     navBar,
-    [Field.name]: Field
+    [Field.name]: Field,
   },
-  watch: {},
   created() {
-    this.param.value = this.numberList[0].value
+    this.amount = JSON.parse(localStorage.getItem("userInfo")).amount
+    this.param.amount = this.numberList[0].value
+    this.getAliPayInfo()
   },
   mounted() {},
   methods: {
+    getAliPayInfo() {
+      this.$api.getAliPayInfo().then(res => {
+        if(res.success) {
+          let result = res.result
+          if(result.isSucceed) {
+            this.isSucceed = true
+            this.param.realName = result.alipayName
+            this.param.alipayChar = result.alipayChar
+          }
+        }
+      })
+    },
     changeNum(index) {
       this.numberList.map((item, idx) => {
         if(idx === index) {
           item.active = true
-          this.param.value = item.value
+          this.param.amount = item.value
         } else {
           item.active = false
         }
       })
-    }
+    },
+    toWithdrawal() {
+      if(this.param.realName == "" || this.param.realName == null) {
+        this.$toast("请填写真实姓名!")
+      } else if(this.param.alipayChar == "" || this.param.alipayChar == null) {
+        this.$toast("请填写支付宝账号")
+      } else if(this.param.amount > this.amount) {
+        this.$toast("提现金额不能大于余额！")
+      } else {
+        this.$api.requestPay(this.param).then(res => {
+        if(res.success) {
+          this.$toast("提现申请已发出,请等待客服处理")
+          setTimeout(() => {
+            this.$router.replace("/withdrawalSuccess")
+          }, 1200)
+        } else {
+          this.$toast(res.error.message)
+        }
+      })
+      }
+    },
   }
 };
 </script>
@@ -191,6 +234,11 @@ export default {
         }
       }
     }
+  }
+  .passwordTitle {
+    font-size: 0.5rem;
+    text-align: center;
+    margin: 0.5rem 0;
   }
 }
 </style>
