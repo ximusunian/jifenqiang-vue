@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-07 18:54:29
+ * @LastEditTime: 2020-11-10 14:50:33
 -->
 <template>
   <div id="task">
@@ -16,7 +16,7 @@
         <div class="countdown-box-next">
           <span class="countdown-box-next-num">￥{{taskInfo.amount}}</span>
           <div class="countdown-box-next-clock">
-            <img src="@/assets/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
+            <img src="http://img.bktt1.top/mobile/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
             <span class="countdown-box-next-clock-time">
               <span>剩余时间:</span><van-count-down :time="Math.ceil(taskInfo.expireSecs)*1000" format="mm:ss"/>
               </span>
@@ -41,7 +41,7 @@
           <div class="step-text">
             <p>
               <span class="step-icon">2</span>
-              <span>点击开始试玩，体验{{translateMinutes(taskInfo.tryDate)}}</span>
+              <span>点击开始试玩，体验{{timeTranslate(taskInfo.tryDate)}}</span>
             </p>
             <p class="step-tips">打开应用时，必须“允许网络接入”</p>
           </div>
@@ -52,10 +52,10 @@
           <div class="step-text">
             <p>
               <span class="step-icon">3</span>
-              <span>试玩{{translateMinutes(taskInfo.tryDate)}}后，回本页领取奖励</span>
+              <span>试玩{{timeTranslate(taskInfo.tryDate)}}后，回本页领取奖励</span>
             </p>
           </div>
-          <div :class="canReceiveAward?'step-btn' :'step-btn disabled'" @click="toReceiveAward">领取奖励</div>
+          <div :class="taskInfo.isInProgress?'step-btn' :'step-btn disabled'" @click="toReceiveAward">领取奖励</div>
         </div>
       </div>
     </div>
@@ -101,13 +101,13 @@
     <!-- 领取成功 -->
     <van-popup v-model="successPopupShow" round :close-on-click-overlay=false :style="style">
       <div class="result-popup">
-        <img src="@/assets/images/gold_coins.png" class="top-img"/>
+        <img src="http://img.bktt1.top/mobile/images/gold_coins.png" class="top-img"/>
         <span class="result-tips">完成任务</span>
         <p><span>￥</span>{{taskInfo.amount}}</p>
         <span>已到账</span>
         <div class="operation">
-          <img src="@/assets/images/invited_money.png" @click="showShareSheet"/>
-          <img src="@/assets/images/continue_play.png" @click="continuePlay"/>
+          <img src="http://img.bktt1.top/mobile/images/invited_money.png" @click="showShareSheet"/>
+          <img src="http://img.bktt1.top/mobile/images/continue_play.png" @click="continuePlay"/>
         </div>
       </div>
     </van-popup>
@@ -120,8 +120,8 @@
           <span style="margin-right: 0.2rem">还需试玩</span>
           <van-count-down :time="Math.ceil(remainingTime)*1000" format="mm分ss秒"></van-count-down>
         </p>
-        <img src="@/assets/images/gold_coins.png" class="app-img"/>
-        <img src="@/assets/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
+        <img src="http://img.bktt1.top/mobile/images/gold_coins.png" class="app-img"/>
+        <img src="http://img.bktt1.top/mobile/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
       </div>
     </van-popup>
 
@@ -183,10 +183,10 @@ export default {
         tryDate: "",
         expireSecs: "",
         url: "",
+        isInProgress: false
       },
       taskAll: {},
       remainingTime: '',
-      canReceiveAward: this.$store.state.status,
       shareInfo: {}
     }
   },
@@ -217,6 +217,7 @@ export default {
         }
       })
     },
+    
     // 时间转换
     translateMinutes(data) {
       let time = Number(parseInt(data))
@@ -230,6 +231,7 @@ export default {
     showDownloadPop() {
       this.show = true
     },
+
     closeDownloadPop() {
       this.show = false
     },
@@ -261,8 +263,7 @@ export default {
     tryAppBack(state) {
       let data = JSON.parse(state)
       if(data.state === "true") {
-        this.$store.commit("updateStatus", true)
-        this.canReceiveAward = true
+        this.taskInfo.isInProgress = true
       } else {
         this.playShow = true
       }
@@ -280,9 +281,8 @@ export default {
     receiveAwardCallBack(data) {
       let result = JSON.parse(data)
       let tips = result.tips 
-      if(tips.indexOf('还未达到任务时间')!=-1) {
+      if(tips.indexOf('试玩时间未到')!=-1) {
         let time = result.time
-        // this.remainingTime = this.timeTranslate(time)
         this.remainingTime = time
         this.errorPopupShow = true
       } else if((tips.indexOf('提交成功')!=-1)){
@@ -303,9 +303,11 @@ export default {
         return parseInt(oldTime/60) + "分钟" + oldTime%60 + "秒"
       }
     },
+
     closePlayPop() {
       this.playShow = false
     },
+
     showShareSheet() {
       this.successPopupShow = false
       this.showShare = true
@@ -313,7 +315,6 @@ export default {
 
     continuePlay() {
       this.successPopupShow = false
-      this.$store.commit("updateStatus", false)
       this.$router.back()
     },
 
@@ -329,6 +330,7 @@ export default {
         }
       })
     },
+
     // 分享
     share(option, index) {
       let shareModel = ""
@@ -342,6 +344,7 @@ export default {
       let data = `type=${shareModel}&url=${url}`
       window.webkit.messageHandlers.toShare.postMessage(data)
     },
+
     toBack() {
       this.$router.back()
     }

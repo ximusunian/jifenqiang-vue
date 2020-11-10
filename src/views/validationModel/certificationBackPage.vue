@@ -12,7 +12,7 @@
       <div class="container">
         <div class="box">
           <p class="txt">认证文件下载完成后，点击去安装</p>
-          <img src="@/assets/images/description_file.png" />
+          <img src="http://img.bktt1.top/mobile/images/description_file.png" />
           <div class="btn_box">
             <span class="again_download" @click="reDownload">重新下载</span>
             <span class="to_install" @click="install">去安装</span>

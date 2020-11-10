@@ -4,12 +4,12 @@
  * @Author: ximusunian
  * @Date: 2020-11-05 09:53:22
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 09:57:06
+ * @LastEditTime: 2020-11-09 13:07:35
 -->
 <template>
   <div class="container-tips">
     <div class="box">
-      <img src="@/assets/images/set_logo.png" class="set_logo" />
+      <img src="http://img.bktt1.top/mobile/images/set_logo.png" class="set_logo" />
       <p class="txt">为了保障您能切实领取到收益</p>
       <p
         style="color: #333333;font-size: 0.32rem;font-weight: 600;margin-top: 0.2rem;"

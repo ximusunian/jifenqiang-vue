@@ -4,11 +4,11 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:14:57
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-06 19:58:07
+ * @LastEditTime: 2020-11-09 09:23:21
 -->
 <template>
   <div id="installSuccess">
-    <img src="@/assets/images/success.png" />
+    <img src="http://img.bktt1.top/mobile/images/success.png" />
     <p>验证成功</p>
     <p style="margin-top: 0.25rem">可以继续开始任务了</p>
     <div class="btn" @click="toApp">继续赚钱</div>

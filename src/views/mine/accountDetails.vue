@@ -4,18 +4,21 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:15:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 14:44:39
+ * @LastEditTime: 2020-11-09 19:13:11
 -->
 <template>
   <div id="accountDetails">
     <navBar title="收益明细"></navBar>
 
-    <van-tabs v-model="reqData.AmountSelectType" @click="changeTab">
+    <van-tabs v-model="reqData.AmountSelectType" @click="changeTab" sticky>
       <van-tab :title="item" v-for="(item, index) in navTitle" :key="index">
         <van-pull-refresh v-model="isLoading" @refresh="onRefresh" style="min-height: 100vh;">
-          <van-list v-model="loading" :finished="finished" @load="onLoad()">
+          <van-list v-model="loading" :finished="finished" @load="onLoad">
             <accountListItem :type="reqData.AmountSelectType" v-for="(item, idx) in list" :key="idx" :data="item"></accountListItem>
-            <accountEmpty v-if="finished && !isLoading && list.length == 0"></accountEmpty>
+            <template #finished>
+              <accountEmpty v-if="finished && !isLoading && list.length == 0"></accountEmpty>
+              <van-divider v-if='list.length !== 0'>没有更多了</van-divider>
+            </template>
           </van-list>
         </van-pull-refresh>
       </van-tab>
@@ -27,7 +30,7 @@
 import navBar from "@/components/NavBar";
 import accountEmpty from "@/components/accountEmpty";
 import accountListItem from "@/components/accountListItem";
-import { Tab, Tabs, List, PullRefresh,  } from "vant";
+import { Tab, Tabs, List, PullRefresh, Divider } from "vant";
 export default {
   name: "accountDetails",
   data() {
@@ -54,7 +57,8 @@ export default {
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
     [List.name]: List,
-    [PullRefresh.name]: PullRefresh
+    [PullRefresh.name]: PullRefresh,
+    [Divider.name]: Divider
   },
   watch: {},
   mounted() {},
@@ -72,6 +76,7 @@ export default {
           this.reqData.PageIndex += 1
           if(this.reqData.PageIndex <= res.result.totalPage) {
             this.finished = false
+            this.onLoad()
           } else {
             this.finished = true
           }

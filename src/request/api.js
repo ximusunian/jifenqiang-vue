@@ -29,6 +29,8 @@ const api = {
   // -------------------配置相关接口-------------------------
   getShareInfo: "/api/mobile/app/GetShareInfo",               // 获取分享数据配置
   getInstallUrl: "/api/NonAuth/InstallUrl",                      // 安装地址
+
+  getUDID: "http://localhost:12345/getUDID",
 };
 
 // const uploadImg = params => {
@@ -123,6 +125,10 @@ const getInstallUrl = params => {
   return get(api.getInstallUrl, params)
 }
 
+const getUDID = params => {
+  return post(api.getUDID, params)
+}
+
 export default {
   getUserInfo,
   getTodayCount,
@@ -146,5 +152,7 @@ export default {
   getShareInfo,
 
   requestPay,
-  getInstallUrl
+  getInstallUrl,
+
+  getUDID,
 };

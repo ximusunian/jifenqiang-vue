@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 09:44:47
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-07 14:35:59
+ * @LastEditTime: 2020-11-09 10:50:55
 -->
 <template>
   <div id="withdrawal">
@@ -80,7 +80,7 @@ export default {
       ],
       param: {
         amount: 0,
-        payType: 0,
+        payType: 1,
         realName: "",
         alipayChar: "",
         remark: "",

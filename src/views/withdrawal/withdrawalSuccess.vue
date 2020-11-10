@@ -4,11 +4,11 @@
  * @Author: ximusunian
  * @Date: 2020-11-07 09:17:10
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-07 09:25:46
+ * @LastEditTime: 2020-11-09 09:24:28
 -->
 <template>
    <div id="withdrawalSuccess">
-      <img src="@/assets/images/success.png" />
+      <img src="http://img.bktt1.top/mobile/images/success.png" />
       <div class="title">提现审核中</div>
       <div class="des">预计一个工作日内打款</div>
       <div class="btn" @click="backIndex">返回</div>

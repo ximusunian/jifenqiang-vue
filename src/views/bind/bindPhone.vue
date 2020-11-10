@@ -4,13 +4,13 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:48:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-06 09:15:07
+ * @LastEditTime: 2020-11-09 18:08:13
 -->
 <template>
   <div id="bindPhone">
     <navBar title="绑定手机"></navBar>
 
-    <img src="@/assets/images/login_bg.png" />
+    <img src="http://img.bktt1.top/mobile/images/login_bg.png" />
 
     <div class="container">
       <div class="form">
@@ -43,7 +43,7 @@
       </div>
     </div>
 
-    <img src="@/assets/images/lemon_bg.png" class="bottom-bg" />
+    <img src="http://img.bktt1.top/mobile/images/lemon_bg.png" class="bottom-bg" />
   </div>
 </template>
 
@@ -88,7 +88,6 @@ export default {
         this.$toast('请输入正确的手机号')
       } else {
         this.$api.sendCaptchaCode({mobile: this.phone}).then(res => {
-          console.log(res);
           if(res.data.success) {
             this.$toast("发送成功")
             this.setCodeTime()
@@ -118,7 +117,7 @@ export default {
             this.$router.replace("/bindWeChat")
           }, 1200);
         } else {
-          this.$toast(res.error)
+          this.$toast(res.error.message)
         }
       })
     },

@@ -4,26 +4,26 @@
  * @Author: ximusunian
  * @Date: 2020-09-24 17:35:15
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-09-24 17:51:56
+ * @LastEditTime: 2020-11-09 09:19:08
 -->
 <template>
    <div id="accountEmpty">
      <van-empty
         class="custom-image"
-        :image="emptyImg"
+        image="http://img.bktt1.top/mobile/images/noting-bg.png"
         description="好像什么东西也没有..."
       />
    </div>
 </template>
 
 <script>
-import emptyImg from "@/assets/images/noting-bg.png";
+// import emptyImg from "@/assets/images/noting-bg.png";
 import { Empty } from "vant";
 export default {
   name: "accountEmpty",
   data() {
     return {
-      emptyImg: emptyImg
+      // emptyImg: emptyImg
     }
   },
   components: {

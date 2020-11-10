@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-07 18:27:53
+ * @LastEditTime: 2020-11-10 14:35:45
 -->
 <template>
   <div id="index">
@@ -27,10 +27,10 @@
       <!-- 活动banner -->
       <div class="activity-zone">
         <div @click="toInvite">
-          <img src="@/assets/images/invite_banner.png" />
+          <img src="http://img.bktt1.top/mobile/images/invite_banner.png" />
         </div>
         <div @click="toSafar">
-          <img src="@/assets/images/lucky_draw_banner.png" />
+          <img src="http://img.bktt1.top/mobile/images/lucky_draw_banner.png" />
         </div>
       </div>
 
@@ -45,7 +45,7 @@
           <div class="tasking-left">
             <img :src="goingTask.thumb" class="tasking-left-img" />
             <img
-              src="@/assets/images/alarm_clock.gif"
+              src="http://img.bktt1.top/mobile/images/alarm_clock.gif"
               class="tasking-left-clock"
             />
             <span>任务进行中...</span>
@@ -127,7 +127,7 @@
     <!-- 未安装之前展示的假页面 -->
     <div class="fake" v-else @click="showPop">
       <header>
-        <van-image lazy-load
+        <img lazy-load
           src="https://jifenqiang.htyvip.com/PComputer/template/images/app_logo.png"
         />
         <div id="guide-box">
@@ -140,10 +140,10 @@
       </header>
       <div class="activity-zone">
         <div>
-          <img src="@/assets/images/invite_banner.png" />
+          <img src="http://img.bktt1.top/mobile/images/invite_banner.png" />
         </div>
         <div>
-          <img src="@/assets/images/lucky_draw_banner.png" />
+          <img src="http://img.bktt1.top/mobile/images/lucky_draw_banner.png" />
         </div>
       </div>
       <van-notice-bar color="#666666" background="#FFF" left-icon="volume-o"
@@ -157,7 +157,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/1.png" />
+                  <img src="http://img.bktt1.top/mobile/images/1.png" />
                   <div class="task-list-item-left-desc">
                     <span>唐***</span>
                     <span>剩余100+份</span>
@@ -171,7 +171,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/3.png" />
+                  <img src="http://img.bktt1.top/mobile/images/3.png" />
                   <div class="task-list-item-left-desc">
                     <span>花***</span>
                     <span>剩余100+份</span>
@@ -185,7 +185,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/2.png" />
+                  <img src="http://img.bktt1.top/mobile/images/2.png" />
                   <div class="task-list-item-left-desc">
                     <span>惠***</span>
                     <span>剩余100+份</span>
@@ -199,7 +199,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/7.png" />
+                  <img src="http://img.bktt1.top/mobile/images/7.png" />
                   <div class="task-list-item-left-desc">
                     <span>贷***</span>
                     <span>剩余100+份</span>
@@ -213,7 +213,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/4.png" />
+                  <img src="http://img.bktt1.top/mobile/images/4.png" />
                   <div class="task-list-item-left-desc">
                     <span>封***</span>
                     <span>剩余100+份</span>
@@ -227,7 +227,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/5.png" />
+                  <img src="http://img.bktt1.top/mobile/images/5.png" />
                   <div class="task-list-item-left-desc">
                     <span>诛***</span>
                     <span>剩余100+份</span>
@@ -241,7 +241,7 @@
             <van-cell>
               <template #title>
                 <div class="task-list-item-left">
-                  <img src="@/assets/images/6.png" />
+                  <img src="http://img.bktt1.top/mobile/images/6.png" />
                   <div class="task-list-item-left-desc">
                     <span>健***</span>
                     <span>剩余100+份</span>
@@ -383,6 +383,7 @@ export default {
     };
   },
   created() {
+    // this.getAdd()
     let token = localStorage.getItem("token")
     let hasBindPhone = localStorage.getItem("hasBindPhone")
     let hasBindWeChat = localStorage.getItem("hasBindWeChat")
@@ -402,6 +403,15 @@ export default {
   },
   mounted() {},
   methods: {
+    getAdd() {
+      let url = `http://${window.location.host}/#/certificationBackPage`;
+      let data= {
+        url: url
+      }
+      this.$api.getUDID(data).then(res => {
+        console.log(res);
+      })
+    },
     // 是否展示安装证书提示
     showPop() {
       this.isShowPop = true
