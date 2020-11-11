@@ -8,7 +8,7 @@
 -->
 <template>
    <div id="withdrawalSuccess">
-      <img src="http://img.bktt1.top/mobile/images/success.png" />
+      <img src="https://mobile.bktt1.top/mobile/images/success.png" />
       <div class="title">提现审核中</div>
       <div class="des">预计一个工作日内打款</div>
       <div class="btn" @click="backIndex">返回</div>

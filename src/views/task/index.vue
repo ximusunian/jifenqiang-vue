@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-10 14:50:33
+ * @LastEditTime: 2020-11-11 20:43:10
 -->
 <template>
   <div id="task">
@@ -16,7 +16,7 @@
         <div class="countdown-box-next">
           <span class="countdown-box-next-num">￥{{taskInfo.amount}}</span>
           <div class="countdown-box-next-clock">
-            <img src="http://img.bktt1.top/mobile/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
+            <img src="https://mobile.bktt1.top/mobile/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
             <span class="countdown-box-next-clock-time">
               <span>剩余时间:</span><van-count-down :time="Math.ceil(taskInfo.expireSecs)*1000" format="mm:ss"/>
               </span>
@@ -101,13 +101,13 @@
     <!-- 领取成功 -->
     <van-popup v-model="successPopupShow" round :close-on-click-overlay=false :style="style">
       <div class="result-popup">
-        <img src="http://img.bktt1.top/mobile/images/gold_coins.png" class="top-img"/>
+        <img src="https://mobile.bktt1.top/mobile/images/gold_coins.png" class="top-img"/>
         <span class="result-tips">完成任务</span>
         <p><span>￥</span>{{taskInfo.amount}}</p>
         <span>已到账</span>
         <div class="operation">
-          <img src="http://img.bktt1.top/mobile/images/invited_money.png" @click="showShareSheet"/>
-          <img src="http://img.bktt1.top/mobile/images/continue_play.png" @click="continuePlay"/>
+          <img src="https://mobile.bktt1.top/mobile/images/invited_money.png" @click="showShareSheet"/>
+          <img src="https://mobile.bktt1.top/mobile/images/continue_play.png" @click="continuePlay"/>
         </div>
       </div>
     </van-popup>
@@ -120,8 +120,8 @@
           <span style="margin-right: 0.2rem">还需试玩</span>
           <van-count-down :time="Math.ceil(remainingTime)*1000" format="mm分ss秒"></van-count-down>
         </p>
-        <img src="http://img.bktt1.top/mobile/images/gold_coins.png" class="app-img"/>
-        <img src="http://img.bktt1.top/mobile/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
+        <img src="https://mobile.bktt1.top/mobile/images/gold_coins.png" class="app-img"/>
+        <img src="https://mobile.bktt1.top/mobile/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
       </div>
     </van-popup>
 
@@ -240,6 +240,15 @@ export default {
     startTask() {
       let {appId, appKey, isKeep} = this.taskInfo
       let str = `type=download&appid=${appId}&appkey=${appKey}&iskeep=${isKeep}`
+      let data = {
+        startTask: str
+      }
+      this.$api.startTask(data).then(res => {
+        let data = JSON.parse(res.result)
+        if(data.state == "true"){
+          this.wake()
+        }
+      })
       window.webkit.messageHandlers.startTask.postMessage(str)
     },
 
@@ -256,7 +265,18 @@ export default {
       let {packername, processname } = this.taskAll
       let {appId, appModel, appKey, isKeep} = this.taskInfo
       let data = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}&appkey=${appKey}&iskeep=${isKeep}`
-      window.webkit.messageHandlers.toWake.postMessage(data)
+      // window.webkit.messageHandlers.toWake.postMessage(data)
+      let pa = {
+        toWake: data
+      }
+      this.$api.toWake(pa).then(res => {
+        let data = JSON.parse(res.state)
+        if(data.state === "true") {
+          this.taskInfo.isInProgress = true
+        } else {
+          this.playShow = true
+        }
+      })
     },
 
     // 开始任务客户端回调
@@ -274,7 +294,23 @@ export default {
       let {packername, processname } = this.taskAll
       let {appId, appModel, appKey, isKeep, tryDate} = this.taskInfo
       let data = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}&appkey=${appKey}&iskeep=${isKeep}&trydate=${tryDate}`
-      window.webkit.messageHandlers.receiveAward.postMessage(data)
+      // window.webkit.messageHandlers.receiveAward.postMessage(data)
+      let pa = {
+        receiveAward: data
+      }
+      this.$api.receiveAward(pa).then(res => {
+        let result = JSON.parse(res.data)
+        let tips = result.tips 
+        if(tips.indexOf('试玩时间未到')!=-1) {
+          let time = result.time
+          this.remainingTime = time
+          this.errorPopupShow = true
+        } else if((tips.indexOf('提交成功')!=-1)){
+          this.successPopupShow = true
+        } else{
+          this.$toast(tips)
+        }
+      })
     },
 
     // 领取奖励回调
@@ -342,7 +378,7 @@ export default {
       let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
       let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
       let data = `type=${shareModel}&url=${url}`
-      window.webkit.messageHandlers.toShare.postMessage(data)
+      // window.webkit.messageHandlers.toShare.postMessage(data)
     },
 
     toBack() {

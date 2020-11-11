@@ -10,7 +10,7 @@
   <div id="shareDownload">
     <div @click="show = true">
       <header>
-        <img src="http://img.bktt1.top/mobile/images/download_banner.png" />
+        <img src="https://mobile.bktt1.top/mobile/images/download_banner.png" />
 
         <!-- 通知 -->
         <van-notice-bar :scrollable="false" background="#FFF">
@@ -56,7 +56,7 @@
         <div class="list">
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/1.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/1.png" />
               <div class="item_info">
                 <p class="name">唐******</p>
                 <p class="remaining">搜索有剩余200</p>
@@ -66,7 +66,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/2.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/2.png" />
               <div class="item_info">
                 <p class="name">惠******</p>
                 <p class="remaining">搜索有剩余53</p>
@@ -76,7 +76,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/3.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/3.png" />
               <div class="item_info">
                 <p class="name">花******</p>
                 <p class="remaining">搜索有剩余46</p>
@@ -86,7 +86,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/4.png" class="blur" />
+              <img src="https://mobile.bktt1.top/mobile/images/4.png" class="blur" />
               <div class="item_info">
                 <p class="name">封******</p>
                 <p class="remaining">搜索有剩余100</p>
@@ -96,7 +96,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/5.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/5.png" />
               <div class="item_info">
                 <p class="name">云******</p>
                 <p class="remaining">搜索有剩余93</p>
@@ -106,7 +106,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/6.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/6.png" />
               <div class="item_info">
                 <p class="name">健******</p>
                 <p class="remaining">搜索有剩余20</p>
@@ -116,7 +116,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/7.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/7.png" />
               <div class="item_info">
                 <p class="name">贷******</p>
                 <p class="remaining">搜索有剩余63</p>
@@ -126,7 +126,7 @@
           </div>
           <div class="list_item">
             <div class="item_left">
-              <img src="http://img.bktt1.top/mobile/images/8.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/8.png" />
               <div class="item_info">
                 <p class="name">贷****极速版</p>
                 <p class="remaining">搜索有剩余52</p>
@@ -140,7 +140,7 @@
       <!-- 底部下载浮层 -->
       <div class="supernatant">
         <div class="supernatant-left">
-          <img src="http://img.bktt1.top/mobile/images/youxiang_logo.png" />
+          <img src="https://mobile.bktt1.top/mobile/images/youxiang_logo.png" />
           <div class="slogan">
             <p>下载试玩助手</p>
             <p>领取<span>0.88元</span>新人红包</p>
@@ -157,7 +157,7 @@
         :data-clipboard-text="uid"
       >
         <img
-          src="http://img.bktt1.top/mobile/images/popup.png"
+          src="https://mobile.bktt1.top/mobile/images/popup.png"
           class="bg"
           @click="toDownload"
           id="copy"

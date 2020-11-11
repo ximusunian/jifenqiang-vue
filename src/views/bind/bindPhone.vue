@@ -10,7 +10,7 @@
   <div id="bindPhone">
     <navBar title="绑定手机"></navBar>
 
-    <img src="http://img.bktt1.top/mobile/images/login_bg.png" />
+    <img src="https://mobile.bktt1.top/mobile/images/login_bg.png" />
 
     <div class="container">
       <div class="form">
@@ -43,7 +43,7 @@
       </div>
     </div>
 
-    <img src="http://img.bktt1.top/mobile/images/lemon_bg.png" class="bottom-bg" />
+    <img src="https://mobile.bktt1.top/mobile/images/lemon_bg.png" class="bottom-bg" />
   </div>
 </template>
 

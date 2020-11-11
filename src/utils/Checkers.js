@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @version: 
+ * @Author: ximusunian
+ * @Date: 2020-09-09 11:31:36
+ * @LastEditors: ximusunian
+ * @LastEditTime: 2020-11-11 20:24:09
+ */
 function Checkers() {}
 Checkers.isPhone = function(str) {
   let phone_reg = /^1[3456789]\d{9}$/;
@@ -11,6 +19,10 @@ Checkers.isUserName = function(str) {
 Checkers.isWechart = function() {
   let ua = navigator.userAgent.toLowerCase()
   return ua.match(/MicroMessenger/i) == "micromessenger"
+}
+
+Checkers.isApp = function() {
+  let ua = navigator.userAgent
 }
 
 export default Checkers;

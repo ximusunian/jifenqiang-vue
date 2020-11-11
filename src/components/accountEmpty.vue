@@ -10,7 +10,7 @@
    <div id="accountEmpty">
      <van-empty
         class="custom-image"
-        image="http://img.bktt1.top/mobile/images/noting-bg.png"
+        image="https://mobile.bktt1.top/mobile/images/noting-bg.png"
         description="好像什么东西也没有..."
       />
    </div>

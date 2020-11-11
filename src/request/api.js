@@ -28,9 +28,17 @@ const api = {
 
   // -------------------配置相关接口-------------------------
   getShareInfo: "/api/mobile/app/GetShareInfo",               // 获取分享数据配置
-  getInstallUrl: "/api/NonAuth/InstallUrl",                      // 安装地址
+  getInstallUrl: "/api/NonAuth/InstallUrl",                   // 安装地址
 
-  getUDID: "http://localhost:12345/getUDID",
+  getUDID: "https://kf.htyvip.com:12345/getUDID",
+  toShare: "https://kf.htyvip.com:12345/toShare",
+  openSafari: "https://kf.htyvip.com:12345/openSafari",
+  bindWeChat: "https://kf.htyvip.com:12345/bindWeChat",
+  startTask: "https://kf.htyvip.com:12345/startTask",
+  checkApp: "https://kf.htyvip.com:12345/checkApp",
+  toWake: "https://kf.htyvip.com:12345/toWake",
+  receiveAward: "https://kf.htyvip.com:12345/receiveAward"
+
 };
 
 // const uploadImg = params => {
@@ -129,6 +137,34 @@ const getUDID = params => {
   return post(api.getUDID, params)
 }
 
+const toShare = params => {
+  return post(api.toShare, params)
+}
+
+const openSafari = params => {
+  return post(api.openSafari, params)
+}
+
+const bindWeChat = params => {
+  return post(api.bindWeChat, params)
+}
+
+const startTask = params => {
+  return post(api.startTask, params)
+}
+
+const toWake = params => {
+  return post(api.toWake, params)
+}
+
+const receiveAward = params => {
+  return post(api.receiveAward, params)
+}
+
+const checkApp = params => {
+  return post(api.checkApp, params)
+}
+
 export default {
   getUserInfo,
   getTodayCount,
@@ -155,4 +191,11 @@ export default {
   getInstallUrl,
 
   getUDID,
+  toShare,
+  openSafari,
+  bindWeChat,
+  startTask,
+  checkApp,
+  toWake,
+  receiveAward
 };

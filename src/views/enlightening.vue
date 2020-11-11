@@ -4,12 +4,12 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:46:29
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-09 09:07:46
+ * @LastEditTime: 2020-11-11 20:04:14
 -->
 <template>
   <div id="enlightening">
     <div class="real" v-if="hasInstall">
-      <img src="http://img.bktt1.top/mobile/images/invitation_bg.png" class="header-bg" />
+      <img src="https://mobile.bktt1.top/mobile/images/invitation_bg.png" class="header-bg" />
       <div class="container">
         <div class="asset-analysis-box">
           <div class="asset-analysis-box-item">
@@ -27,7 +27,7 @@
         </div>
         <div class="invitation-step">
           <div class="rule-description">
-            <img src="http://img.bktt1.top/mobile/images/rule_description.png" />
+            <img src="https://mobile.bktt1.top/mobile/images/rule_description.png" />
           </div>
           <p>
             每个徒弟完成1个任务，你得
@@ -36,23 +36,23 @@
           <p>每个徒弟均无限奖励，永不封顶</p>
           <div class="step">
             <div class="step-item">
-              <img src="http://img.bktt1.top/mobile/images/invitation_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/invitation_icon.png" />
               <span>邀请好友</span>
             </div>
             <div class="step-arrow">
-              <img src="http://img.bktt1.top/mobile/images/step_arrow_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/step_arrow_icon.png" />
               <span></span>
             </div>
             <div class="step-item">
-              <img src="http://img.bktt1.top/mobile/images/assignment_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/assignment_icon.png" />
               <span>好友完成任务</span>
             </div>
             <div class="step-arrow">
-              <img src="http://img.bktt1.top/mobile/images/step_arrow_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/step_arrow_icon.png" />
               <span></span>
             </div>
             <div class="step-item">
-              <img src="http://img.bktt1.top/mobile/images/reward_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/reward_icon.png" />
               <span>你获得奖励</span>
             </div>
           </div>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="fake" v-else @click="showPop">
-      <img src="http://img.bktt1.top/mobile/images/invitation_bg.png" class="header-bg" />
+      <img src="https://mobile.bktt1.top/mobile/images/invitation_bg.png" class="header-bg" />
       <div class="container">
         <div class="asset-analysis-box">
           <div class="asset-analysis-box-item">
@@ -92,7 +92,7 @@
         </div>
         <div class="invitation-step">
           <div class="rule-description">
-            <img src="http://img.bktt1.top/mobile/images/rule_description.png" />
+            <img src="https://mobile.bktt1.top/mobile/images/rule_description.png" />
           </div>
           <p>
             每个徒弟完成1个任务，你得
@@ -101,23 +101,23 @@
           <p>每个徒弟均无限奖励，永不封顶</p>
           <div class="step">
             <div class="step-item">
-              <img src="http://img.bktt1.top/mobile/images/invitation_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/invitation_icon.png" />
               <span>邀请好友</span>
             </div>
             <div class="step-arrow">
-              <img src="http://img.bktt1.top/mobile/images/step_arrow_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/step_arrow_icon.png" />
               <span></span>
             </div>
             <div class="step-item">
-              <img src="http://img.bktt1.top/mobile/images/assignment_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/assignment_icon.png" />
               <span>好友完成任务</span>
             </div>
             <div class="step-arrow">
-              <img src="http://img.bktt1.top/mobile/images/step_arrow_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/step_arrow_icon.png" />
               <span></span>
             </div>
             <div class="step-item">
-              <img src="http://img.bktt1.top/mobile/images/reward_icon.png" />
+              <img src="https://mobile.bktt1.top/mobile/images/reward_icon.png" />
               <span>你获得奖励</span>
             </div>
           </div>
@@ -205,11 +205,29 @@ export default {
       } else if(option.name == "朋友圈") {
         shareModel = "friend"
       }
-      let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
-      let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
-      let data = `type=${shareModel}&url=${url}`
-      window.webkit.messageHandlers.toShare.postMessage(data)
+      // let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
+      // let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
+      // let data = `type=${shareModel}&url=${url}`
+      // let N_data = {
+      //   url: "httpL//www.baidu.com",
+      //   uid: "1",
+      //   key: "11",
+      //   title: "测试",
+      //   subtitle: "测试",
+      //   sharelogo: "xxxxx",
+      //   type: shareModel
+      // }
+      let N_data = `?&url=http://www.baidu.com&uid=1&key=11&title=测试&subtitle=测试&sharelogo=xxxx&type=${shareModel}&`
+      this.N_share(N_data)
+      // window.webkit.messageHandlers.toShare.postMessage(data)
       this.showShare = false
+    },
+    N_share(data) {
+      let datas = {
+        toShare: data
+      }
+      console.log(datas);
+      this.$api.toShare(datas).then(res => {})
     },
     getShareInfo() {
       this.$api.getShareInfo().then(res => {
