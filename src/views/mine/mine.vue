@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:47:04
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-07 11:17:55
+ * @LastEditTime: 2020-11-12 18:15:44
 -->
 <template>
   <div id="mine">
@@ -220,13 +220,23 @@ export default {
     toWithdrawal() {
       let hasBindPhone = localStorage.getItem("hasBindPhone")
       let hasBindWeChat = localStorage.getItem("hasBindWeChat")
-      if(hasBindPhone == "false") {
-        this.$router.push("/bindPhone")
-      } else if(hasBindWeChat == "false") {
-        this.$router.push("/bindWeChat")
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        if(hasBindPhone == "false") {
+          this.$router.push("/bindPhone")
+        } else if(hasBindWeChat == "false") {
+          this.$router.push("/bindWeChat")
+        } else {
+          this.$router.push("/withdrawal");
+        }
       } else {
-        this.$router.push("/withdrawal");
+        if(hasBindPhone == "false") {
+          this.$router.push("/bindPhone")
+        } else {
+          this.$router.push("/withdrawal");
+        }
       }
+      
     },
     toAccountDetails() {
       this.$router.push("/mine/accountDetails");

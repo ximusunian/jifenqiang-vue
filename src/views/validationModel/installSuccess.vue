@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:14:57
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-09 09:23:21
+ * @LastEditTime: 2020-11-12 17:57:54
 -->
 <template>
   <div id="installSuccess">
@@ -20,7 +20,7 @@ export default {
   name: "installSuccess",
   data() {
     return {
-      openAppUrl: `${window.location.host}/#/`
+      openAppUrl: `${window.location.host}/#/`,
     };
   },
   components: {},
@@ -33,7 +33,17 @@ export default {
   mounted() {},
   methods: {
     toApp() {
-      window.location = this.openAppUrl
+      let isAPP = this.$route.query.browser
+      if(isAPP == 1) {
+        window.location = this.openAppUrl
+      } else {
+        this.S_toApp()
+      }
+    },
+    S_toApp() {
+      let udid = this.$route.query.udid
+      localStorage.setItem("udid", udid)
+      this.$router.replace("/")
     }
   }
 };

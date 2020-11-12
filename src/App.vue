@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-05 17:12:36
+ * @LastEditTime: 2020-11-12 17:46:53
 -->
 <template>
   <div id="app">
@@ -16,6 +16,7 @@
 </template>
 <script>
 import TabBar from "@/components/TabBar";
+import Checkers from "@/utils/Checkers"
 export default {
   name: "App",
   components: {
@@ -25,6 +26,11 @@ export default {
     window["setToken"] = function(data) {
       localStorage.setItem("token", data);
       location.reload()
+    }
+    if(Checkers.isApp()) {
+      localStorage.setItem("isApp","true")
+    } else {
+      localStorage.setItem("isApp","false")
     }
   },
   watch: {},

@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:46:29
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-11 20:04:14
+ * @LastEditTime: 2020-11-12 18:42:13
 -->
 <template>
   <div id="enlightening">
@@ -186,6 +186,7 @@ export default {
     showPop() {
       this.isShowPop = true
     },
+    
     getInvitePageCount() {
       this.$api.getInvitePageCount().then(res => {
         if(res.success) {
@@ -195,9 +196,11 @@ export default {
         }
       })
     },
+
     toShare() {
       this.showShare = true;
     },
+
     share(option, index) {
       let shareModel = ""
       if(option.name == "微信") {
@@ -205,30 +208,19 @@ export default {
       } else if(option.name == "朋友圈") {
         shareModel = "friend"
       }
-      // let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
-      // let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
-      // let data = `type=${shareModel}&url=${url}`
-      // let N_data = {
-      //   url: "httpL//www.baidu.com",
-      //   uid: "1",
-      //   key: "11",
-      //   title: "测试",
-      //   subtitle: "测试",
-      //   sharelogo: "xxxxx",
-      //   type: shareModel
-      // }
-      let N_data = `?&url=http://www.baidu.com&uid=1&key=11&title=测试&subtitle=测试&sharelogo=xxxx&type=${shareModel}&`
-      this.N_share(N_data)
-      // window.webkit.messageHandlers.toShare.postMessage(data)
-      this.showShare = false
-    },
-    N_share(data) {
-      let datas = {
-        toShare: data
+
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
+        let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
+        let data = `type=${shareModel}&url=${url}`
+        window.webkit.messageHandlers.toShare.postMessage(data)
+      } else {
+        this.$toast("请前往App内分享！")
+        this.showShare = false
       }
-      console.log(datas);
-      this.$api.toShare(datas).then(res => {})
     },
+    
     getShareInfo() {
       this.$api.getShareInfo().then(res => {
         if(res.success) {

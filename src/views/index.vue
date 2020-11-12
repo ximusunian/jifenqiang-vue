@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-11 20:31:29
+ * @LastEditTime: 2020-11-12 20:39:30
 -->
 <template>
   <div id="index">
@@ -395,10 +395,56 @@ export default {
       this.isBindMobile()
       this.isBindWechat()
     }
+
+
     let _this = this
     window["checkAppCallBack"] = function(data) {
       _this.checkAppCallBack(data)
     }
+
+
+      let udid = localStorage.getItem("udid")
+      let tx = ""
+      if(udid !== "" && udid !== null && udid !== undefined) {
+        tx = udid
+      }
+      let isAPP = localStorage.getItem("isApp")
+      let browser = ""
+      if(isAPP == "false") {
+        browser = 0
+      } else {
+        browser = 1
+      }
+      let data= {
+        getUDID: `udid=${tx}&browser=${browser}`
+      }
+      this.$api.getUDID(data).then(res => {
+        if(res.refresh == 1) {
+          localStorage.setItem("token", "")
+          localStorage.removeItem("udid")
+          location.reload()
+        } else {
+          if(token == undefined || token == null || token == "") {
+            if(res.token !== "" && res.token !== null && res.token !== undefined) {
+              localStorage.setItem("token", res.token);
+              localStorage.removeItem("udid")
+              location.reload()
+            }
+          } else {
+            if(res.token !== "" && res.token !== null && res.token !== undefined) {
+              if(token != res.token) {
+                localStorage.setItem("token", res.token);
+                localStorage.removeItem("udid")
+                location.reload()
+              }
+            } else {
+              localStorage.removeItem("token");
+              localStorage.removeItem("udid")
+              location.reload()
+            }
+          }
+        }
+      })  
   },
   mounted() {},
   methods: {
@@ -441,13 +487,23 @@ export default {
     },
     // 去详情页
     toDetail(data) {
-      if(!this.hasBindPhone) {
-        this.$router.push("/bindPhone")
-      } else if(!this.hasBindWeChat) {
-        this.$router.push("/bindWeChat")
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        if(!this.hasBindPhone) {
+          this.$router.push("/bindPhone")
+        } else if(!this.hasBindWeChat) {
+          this.$router.push("/bindWeChat")
+        } else {
+          this.$router.push({ path: "/task", query: { data: JSON.stringify(data) } });
+        }
       } else {
-        this.$router.push({ path: "/task", query: { data: JSON.stringify(data) } });
+        if(!this.hasBindPhone) {
+          this.$router.push("/bindPhone")
+        } else {
+          this.$router.push({ path: "/task", query: { data: JSON.stringify(data) } });
+        }
       }
+      
     },
 
     // -----------------------------------活动banner事件开始------------------------------
@@ -457,42 +513,52 @@ export default {
     },
     // 去浏览器打开外部活动界面
     toSafar() {
-      let url =
-        "https://engine.peonyta.com/index/activity?appKey=3FoScyQDrr1vudSLZzWTPHnRnUJ&adslotId=338168";
-      // window.webkit.messageHandlers.openSafari.postMessage(url)
-      let data = {
-        url: url
+      let url = "https://engine.peonyta.com/index/activity?appKey=3FoScyQDrr1vudSLZzWTPHnRnUJ&adslotId=338168";
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        window.webkit.messageHandlers.openSafari.postMessage(url)
+      } else {
+        window.open(url)
       }
-      window.open(url)
-      // this.$api.openSafari({"openSafari": data}).then(res => {})
     },
     // ------------------------------------活动banner事件结束-----------------------------
 
     // 抢夺任务
     checkApp(item) {
-      if(!this.hasBindPhone) {
-        this.$router.push("/bindPhone")
-      } else if(!this.hasBindWeChat) {
-        this.$router.push("/bindWeChat")
-      } else {
-        let {appId, packername, processname, appModel} = item
-        let options = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}`
-        this.stagingTask = item
-        // window.webkit.messageHandlers.checkApp.postMessage(options)
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        if(!this.hasBindPhone) {
+          this.$router.push("/bindPhone")
+        } else if(!this.hasBindWeChat) {
+          this.$router.push("/bindWeChat")
+        } else {
+          let {appId, packername, processname, appModel} = item
+          let options = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}`
+          this.stagingTask = item
 
-        let data = {
-          checkApp: options
+          window.webkit.messageHandlers.checkApp.postMessage(options)
         }
-        this.$api.checkApp(data).then(res => {
-          let jsonData = JSON.parse(res.data)
-          if (jsonData["isfind"] == 'false') {
-            this.saveFinishKey(jsonData.appid)
-            this.$toast("您已经做过这个任务了")
-          } else if (jsonData["isfind"] == 'true') {
-            this.task = this.stagingTask
-            this.snatchAppTask(jsonData.appid)
+      } else {
+        if(!this.hasBindPhone) {
+          this.$router.push("/bindPhone")
+        } else {   
+          let {appId, packername, processname, appModel} = item
+          let options = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}`
+          this.stagingTask = item
+          let data = {
+            checkApp: options
           }
-        })
+          this.$api.checkApp(data).then(res => {
+            let jsonData = JSON.parse(res.checkAppCallBack)
+            if (jsonData["isfind"] == 'false') {
+              this.saveFinishKey(jsonData.appid)
+              this.$toast("您已经做过这个任务了")
+            } else if (jsonData["isfind"] == 'true') {
+              this.task = this.stagingTask
+              this.snatchAppTask(jsonData.appid)
+            }
+          })
+        }
       }
     },
 
@@ -511,7 +577,7 @@ export default {
     saveFinishKey(id) {
       let appid = id
       this.$api.saveFinishKey({appid: appid}).then(res => {
-        if(res.success) {
+        if(res.data.success) {
           this.getTask()
         }
       })
@@ -560,13 +626,23 @@ export default {
 
     // 去提现
     toWithdrawal() {
-      if(!this.hasBindPhone) {
-        this.$router.push("/bindPhone")
-      } else if(!this.hasBindWeChat) {
-        this.$router.push("/bindWeChat")
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        if(!this.hasBindPhone) {
+          this.$router.push("/bindPhone")
+        } else if(!this.hasBindWeChat) {
+          this.$router.push("/bindWeChat")
+        } else {
+          this.$router.push("/withdrawal");
+        }
       } else {
-        this.$router.push("/withdrawal");
+        if(!this.hasBindPhone) {
+          this.$router.push("/bindPhone")
+        } else {
+          this.$router.push("/withdrawal");
+        }
       }
+      
     },
 
     // 确实放弃之前任务，进行新任务

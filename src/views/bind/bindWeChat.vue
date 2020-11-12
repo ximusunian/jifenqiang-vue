@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:20:41
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-11 20:22:49
+ * @LastEditTime: 2020-11-12 18:50:04
 -->
 <template>
   <div id="bindWeChat">
@@ -39,8 +39,7 @@ export default {
   mounted() {},
   methods: {
     bindWeChat() {
-      this.$api.bindWeChat().then(res => {})
-      // window.webkit.messageHandlers.wxLogin.postMessage({})
+      window.webkit.messageHandlers.wxLogin.postMessage({})
     },
     successBind(data) {
       let state = JSON.parse(data)

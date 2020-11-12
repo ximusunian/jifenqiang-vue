@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-11 20:24:09
+ * @LastEditTime: 2020-11-12 18:22:42
  */
 function Checkers() {}
 Checkers.isPhone = function(str) {
@@ -23,6 +23,11 @@ Checkers.isWechart = function() {
 
 Checkers.isApp = function() {
   let ua = navigator.userAgent
+  if(ua.indexOf("iOSFromApp") > -1) {
+    return true
+  } else {
+    return false
+  }
 }
 
 export default Checkers;

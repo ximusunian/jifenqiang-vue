@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-26 13:48:21
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-09 18:08:13
+ * @LastEditTime: 2020-11-12 18:49:41
 -->
 <template>
   <div id="bindPhone">
@@ -109,13 +109,18 @@ export default {
         mobile: this.phone,
         captcha: this.sms
       }
+      let isAPP = localStorage.getItem("isApp")
       this.$api.bindMobile(data).then(res => {
         if(res.success) {
           this.$toast("绑定成功");
           localStorage.setItem("hasBindPhone", "true")
-          setTimeout(() => {
-            this.$router.replace("/bindWeChat")
-          }, 1200);
+          if(isAPP == "true") {
+            setTimeout(() => {
+              this.$router.replace("/bindWeChat")
+            }, 1200);
+          } else {
+            this.$router.replace("/")
+          }
         } else {
           this.$toast(res.error.message)
         }

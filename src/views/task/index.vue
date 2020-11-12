@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-11 20:43:10
+ * @LastEditTime: 2020-11-12 19:21:11
 -->
 <template>
   <div id="task">
@@ -45,7 +45,7 @@
             </p>
             <p class="step-tips">打开应用时，必须“允许网络接入”</p>
           </div>
-          <div class="step-btn" @click="startTask">开始试玩</div>
+          <div class="step-btn" @click="wake">开始试玩</div>
         </div>
         <van-divider class="divider"/>
         <div class="step">
@@ -214,6 +214,8 @@ export default {
         if(res.success) {
           this.taskInfo = res.result
           this.taskInfo.url = data.thumb
+        } else {
+          this.$toast(res.error.message)
         }
       })
     },
@@ -240,23 +242,29 @@ export default {
     startTask() {
       let {appId, appKey, isKeep} = this.taskInfo
       let str = `type=download&appid=${appId}&appkey=${appKey}&iskeep=${isKeep}`
-      let data = {
-        startTask: str
-      }
-      this.$api.startTask(data).then(res => {
-        let data = JSON.parse(res.result)
-        if(data.state == "true"){
-          this.wake()
+
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        window.webkit.messageHandlers.startTask.postMessage(str)
+      } else {
+        let data = {
+          startTask: str
         }
-      })
-      window.webkit.messageHandlers.startTask.postMessage(str)
+        this.$api.startTask(data).then(res => {
+          let data = JSON.parse(res.startCallBack)
+          if(data.state == "true"){
+            this.taskInfo.isInProgress = true
+          }
+        })
+      }
+      
     },
 
     // 开始任务回调
     startCallBack(result) {
       let data = JSON.parse(result)
       if(data.state == "true"){
-        this.wake()
+        this.taskInfo.isInProgress = true
       }
     },
 
@@ -265,24 +273,31 @@ export default {
       let {packername, processname } = this.taskAll
       let {appId, appModel, appKey, isKeep} = this.taskInfo
       let data = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}&appkey=${appKey}&iskeep=${isKeep}`
-      // window.webkit.messageHandlers.toWake.postMessage(data)
-      let pa = {
-        toWake: data
-      }
-      this.$api.toWake(pa).then(res => {
-        let data = JSON.parse(res.state)
-        if(data.state === "true") {
-          this.taskInfo.isInProgress = true
-        } else {
-          this.playShow = true
+
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        window.webkit.messageHandlers.toWake.postMessage(data)
+      } else {
+        let pa = {
+          toWake: data
         }
-      })
+        this.$api.toWake(pa).then(res => {
+          let data = JSON.parse(res.tryAppBack)
+          if(data.state === "true") {
+            this.startTask()
+          } else {
+            this.playShow = true
+          }
+        })
+      }
+      
     },
 
     // 开始任务客户端回调
     tryAppBack(state) {
       let data = JSON.parse(state)
       if(data.state === "true") {
+        this.startTask()
         this.taskInfo.isInProgress = true
       } else {
         this.playShow = true
@@ -294,27 +309,32 @@ export default {
       let {packername, processname } = this.taskAll
       let {appId, appModel, appKey, isKeep, tryDate} = this.taskInfo
       let data = `identify=${packername}&packagename=${processname}&appid=${appId}&istype=${appModel}&appkey=${appKey}&iskeep=${isKeep}&trydate=${tryDate}`
-      // window.webkit.messageHandlers.receiveAward.postMessage(data)
-      let pa = {
-        receiveAward: data
-      }
-      this.$api.receiveAward(pa).then(res => {
-        let result = JSON.parse(res.data)
-        let tips = result.tips 
-        if(tips.indexOf('试玩时间未到')!=-1) {
-          let time = result.time
-          this.remainingTime = time
-          this.errorPopupShow = true
-        } else if((tips.indexOf('提交成功')!=-1)){
-          this.successPopupShow = true
-        } else{
-          this.$toast(tips)
+      
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        window.webkit.messageHandlers.receiveAward.postMessage(data)
+      } else {
+        let pa = {
+          receiveAward: data
         }
-      })
+        this.$api.receiveAward(pa).then(res => {
+          let result = JSON.parse(res.finishApplicationCallBack)
+          let tips = result.tips 
+          if(tips.indexOf('试玩时间未到')!=-1) {
+            let time = result.time
+            this.remainingTime = time
+            this.errorPopupShow = true
+          } else if((tips.indexOf('提交成功')!=-1)){
+            this.successPopupShow = true
+          } else{
+            this.$toast(tips)
+          }
+        })
+      }
     },
 
     // 领取奖励回调
-    receiveAwardCallBack(data) {
+    finishApplicationCallBack(data) {
       let result = JSON.parse(data)
       let tips = result.tips 
       if(tips.indexOf('试玩时间未到')!=-1) {
@@ -378,7 +398,14 @@ export default {
       let {uid, key, shareLogo, subTitle, title, urlStr} = this.shareInfo
       let url = `${urlStr}?uid=${uid}&key=${key}&title=${title}&subtitle=${subTitle}&sharelogo=${shareLogo}`
       let data = `type=${shareModel}&url=${url}`
-      // window.webkit.messageHandlers.toShare.postMessage(data)
+
+      let isAPP = localStorage.getItem("isApp")
+      if(isAPP == "true") {
+        window.webkit.messageHandlers.toShare.postMessage(data)
+      } else {
+        this.$toast("请前往App内分享！")
+        this.showShare = false
+      }
     },
 
     toBack() {

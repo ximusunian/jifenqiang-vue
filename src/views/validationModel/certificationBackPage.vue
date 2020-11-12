@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:35:03
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-04 18:07:28
+ * @LastEditTime: 2020-11-12 16:32:10
 -->
 <template>
   <div id="certificationBackPage">
@@ -46,14 +46,15 @@ export default {
     },
     download() {
       let flag = this.$route.query.flag
-      let url = `https://jifenqiang.htyvip.com/${decodeURIComponent(flag)}.mobileconfig`
+      let url = `https://mobile.bktt1.top/mobile/conf/apph5.mobileconfig`
       const a = document.createElement("a");
       a.setAttribute("download", "");
       a.setAttribute("href", url);
       a.click();
     },
     install() {
-      window.location = "https://jifenqiang.htyvip.com/embedded.mobileprovision"
+      let flag = this.$route.query.flag
+      window.location = `https://mobile.bktt1.top/mobile/conf/embedded.mobileprovision`
     }
   }
 };
