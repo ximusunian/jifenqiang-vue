@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-12 20:39:30
+ * @LastEditTime: 2020-11-13 11:29:45
 -->
 <template>
   <div id="index">
@@ -384,16 +384,14 @@ export default {
   },
   created() {
     let token = localStorage.getItem("token")
-    let hasBindPhone = localStorage.getItem("hasBindPhone")
-    let hasBindWeChat = localStorage.getItem("hasBindWeChat")
     if(token == undefined || token == null || token == "") {
       this.hasInstall = false
     } else {
       this.hasInstall = true
       this.getInfo()
       this.getTask()
-      this.isBindMobile()
-      this.isBindWechat()
+      // this.isBindMobile()
+      // this.isBindWechat()
     }
 
 
@@ -483,6 +481,10 @@ export default {
       this.$api.getUserInfo().then(res => {
         this.userInfo = res.result;
         localStorage.setItem("userInfo",JSON.stringify(res.result))
+        localStorage.setItem("hasBindPhone", res.result.isBindMobile)
+        localStorage.setItem("hasBindWeChat", res.result.isBindWechat)
+        this.hasBindPhone = res.result.isBindMobile
+        this.hasBindWeChat = res.result.isBindWechat
       });
     },
     // 去详情页
@@ -649,7 +651,10 @@ export default {
     confirmAbandon() {
       this.$api.abortSession().then(res => {
         if (res.success) {
+          this.show = false
+          setTimeout(()=> {
           this.checkApp(this.task);
+          },150)
         }
       });
     },

@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-12 19:21:11
+ * @LastEditTime: 2020-11-13 17:04:31
 -->
 <template>
   <div id="task">
@@ -14,7 +14,7 @@
       <div class="countdown-box">
         <p class="countdown-box-title">抢到任务啦，快去完成吧</p>
         <div class="countdown-box-next">
-          <span class="countdown-box-next-num">￥{{taskInfo.amount}}</span>
+          <span class="countdown-box-next-num">￥{{tFixed(taskInfo.amount)}}</span>
           <div class="countdown-box-next-clock">
             <img src="https://mobile.bktt1.top/mobile/images/alarm_clock.gif" class="countdown-box-next-clock-img"/>
             <span class="countdown-box-next-clock-time">
@@ -30,7 +30,7 @@
             <p>
               <span class="step-icon">1</span>
               <span>前往App Store 搜索：</span>
-              <span class="app-name">{{taskInfo.appName}}</span>
+              <span class="app-name">{{taskInfo.keyword}}</span>
             </p>
             <p>约在第<span class="app-rank">{{taskInfo.softRank}}</span>位，找到该图标应用下载安装</p>
           </div>
@@ -118,7 +118,8 @@
         <p class="result-tips">时间还不够哦~</p>
         <p style="display: flex; align-item: center;margin-top: 0.2rem">
           <span style="margin-right: 0.2rem">还需试玩</span>
-          <van-count-down :time="Math.ceil(remainingTime)*1000" format="mm分ss秒"></van-count-down>
+          <span class="continue-time">{{timeTranslate(remainingTime)}}</span>
+          <!-- <van-count-down :time="Math.ceil(remainingTime)*1000" format="mm分ss秒"></van-count-down> -->
         </p>
         <img src="https://mobile.bktt1.top/mobile/images/gold_coins.png" class="app-img"/>
         <img src="https://mobile.bktt1.top/mobile/images/continue_play_big.png" class="continue-btn" @click="errorContinuePlay"/>
@@ -142,6 +143,7 @@ import navBarTask from "@/components/NavBarTask"
 import { Divider, Popup, ShareSheet, CountDown  } from "vant"
 import weChat from '@/assets/images/weChat.png';
 import friend from '@/assets/images/friend.png';
+import {tFixed} from "@/utils/utils"
 export default {
   name: "task",
   components: {
@@ -202,7 +204,7 @@ export default {
     }
 
     window["finishApplicationCallBack"] = function(data) {
-      _this.receiveAwardCallBack(data)
+      _this.finishApplicationCallBack(data)
     }
   },
   methods: {
@@ -319,7 +321,7 @@ export default {
         }
         this.$api.receiveAward(pa).then(res => {
           let result = JSON.parse(res.finishApplicationCallBack)
-          let tips = result.tips 
+          let tips = result.tips
           if(tips.indexOf('试玩时间未到')!=-1) {
             let time = result.time
             this.remainingTime = time
@@ -355,6 +357,8 @@ export default {
         return oldTime + "秒"
       } else if(oldTime === 60) {
         return "1分钟"
+      } else if(oldTime%60 == 0){
+        return parseInt(oldTime/60) + "分钟"
       } else {
         return parseInt(oldTime/60) + "分钟" + oldTime%60 + "秒"
       }
@@ -371,7 +375,7 @@ export default {
 
     continuePlay() {
       this.successPopupShow = false
-      this.$router.back()
+      this.$router.replace("/")
     },
 
     errorContinuePlay() {
@@ -410,6 +414,10 @@ export default {
 
     toBack() {
       this.$router.back()
+    },
+
+    tFixed(num) {
+      return tFixed(num)
     }
   }
 }
@@ -437,7 +445,7 @@ export default {
         &-num {
           color: #F44D49;
           font-size: 0.56rem;
-          font-weight: 600;
+          font-weight: 800;
         }
         &-clock {
           display: flex;
