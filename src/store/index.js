@@ -5,11 +5,15 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    status: false
+    status: false,
+    network: false
   },
   mutations: {
     updateStatus(state, data) {
       state.status = data
+    },
+    setNetWork(state, data) {
+      state.network = data
     }
   },
   actions: {},

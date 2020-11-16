@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-13 17:04:31
+ * @LastEditTime: 2020-11-16 17:17:08
 -->
 <template>
   <div id="task">
@@ -65,7 +65,7 @@
       <div class="popup-box">
         <div class="popup-top">
           <p>返回桌面，打开 AppStore<img src="@/assets/images/appStore.png" /></p>
-          <p>在搜索框内输入 <span class="app-name">塔防游戏</span></p>
+          <p>在搜索框内输入 <span class="app-name">{{taskInfo.keyword}}</span></p>
         </div>
         <van-divider/>
         <div class="popup-next">
@@ -380,6 +380,7 @@ export default {
 
     errorContinuePlay() {
       this.errorPopupShow = false
+      this.wake()
     },
 
     // 获取分享信息

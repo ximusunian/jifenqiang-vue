@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:35:03
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-12 16:32:10
+ * @LastEditTime: 2020-11-16 17:10:51
 -->
 <template>
   <div id="certificationBackPage">
@@ -12,7 +12,7 @@
       <div class="container">
         <div class="box">
           <p class="txt">认证文件下载完成后，点击去安装</p>
-          <img src="https://mobile.bktt1.top/mobile/images/description_file.png" />
+          <img src="@/assets/images/description_file.png" />
           <div class="btn_box">
             <span class="again_download" @click="reDownload">重新下载</span>
             <span class="to_install" @click="install">去安装</span>

@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 13:46:29
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-12 18:42:13
+ * @LastEditTime: 2020-11-16 19:19:44
 -->
 <template>
   <div id="enlightening">
@@ -31,7 +31,7 @@
           </div>
           <p>
             每个徒弟完成1个任务，你得
-            <span class="unit_price">{{data.scAmount}}</span> 元/任务
+            <span class="unit_price">{{Math.ceil(data.scAmount)}}</span> 元/任务
           </p>
           <p>每个徒弟均无限奖励，永不封顶</p>
           <div class="step">

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import axios from "axios";
 import { Toast } from "vant"
+import store from "../store";
 // 设置全局axios的默认值
 axios.defaults.timeout = 10000;
 axios.defaults.baseURL = 'https://jfqapi.bktt1.top/';
@@ -34,11 +35,17 @@ axios.interceptors.response.use(
   },
   error => {
     // 错误提醒
+    if (!error.response) {
+      let isAPP = localStorage.getItem("isApp")
+      if (isAPP == "false") {
+        store.commit("setNetWork", true)
+      }
+    }
     if (error.response) {
-			if (error.response.status === 500) {
-				Toast(error.response)
-			}
-		}
+      if (error.response.status === 500) {
+        Toast(error.response)
+      }
+    }
     if (error.message.includes("timeout")) {
       Toast("请求超时");
     }
