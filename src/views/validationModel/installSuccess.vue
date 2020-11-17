@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-25 19:14:57
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-12 17:57:54
+ * @LastEditTime: 2020-11-17 14:33:08
 -->
 <template>
   <div id="installSuccess">
@@ -34,6 +34,7 @@ export default {
   methods: {
     toApp() {
       let isAPP = this.$route.query.browser
+      console.log(isAPP);
       if(isAPP == 1) {
         window.location = this.openAppUrl
       } else {

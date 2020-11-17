@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-13 11:29:45
+ * @LastEditTime: 2020-11-17 18:14:46
 -->
 <template>
   <div id="index">
@@ -505,7 +505,6 @@ export default {
           this.$router.push({ path: "/task", query: { data: JSON.stringify(data) } });
         }
       }
-      
     },
 
     // -----------------------------------活动banner事件开始------------------------------
@@ -553,11 +552,11 @@ export default {
           this.$api.checkApp(data).then(res => {
             let jsonData = JSON.parse(res.checkAppCallBack)
             if (jsonData["isfind"] == 'false') {
-              this.saveFinishKey(jsonData.appid)
+              this.saveFinishKey(jsonData)
               this.$toast("您已经做过这个任务了")
             } else if (jsonData["isfind"] == 'true') {
               this.task = this.stagingTask
-              this.snatchAppTask(jsonData.appid)
+              this.snatchAppTask(jsonData)
             }
           })
         }
@@ -568,27 +567,62 @@ export default {
     checkAppCallBack(data) {
       let jsonData = JSON.parse(data)
       if (jsonData["isfind"] == 'false') {
-        this.saveFinishKey(jsonData.appid)
+        this.saveFinishKey(jsonData)
         this.$toast("您已经做过这个任务了")
       } else if (jsonData["isfind"] == 'true') {
         this.task = this.stagingTask
-        this.snatchAppTask(jsonData.appid)
+        this.snatchAppTask(jsonData)
       }
     },
 
-    saveFinishKey(id) {
-      let appid = id
-      this.$api.saveFinishKey({appid: appid}).then(res => {
+    saveFinishKey(jsonData) {
+      let data = {
+        AppID: jsonData.appid,
+        isKeep: !!this.stagingTask.isKeep,
+        idfa: jsonData.idfa,
+        localIP: jsonData.localIP,
+        iosVersion: jsonData.iosVersion,
+        deviceModel: jsonData.deviceModel,
+        assistantVersion: jsonData.assistantVersion,
+        assistantPackage: jsonData.assistantPackage,
+        localTime: jsonData.localTime,
+        chargeProgress: jsonData.chargeProgress,
+        chargeStatus: jsonData.chargeStatus,
+        deviceStorage: jsonData.deviceStorage,
+        deviceBelong: jsonData.deviceBelong,
+        deviceMemory: jsonData.deviceMemory,
+        operatorCode: jsonData.operatorCode,
+        open_udid: jsonData.open_udid
+      }
+      this.$api.saveFinishKey(data).then(res => {
         if(res.data.success) {
+          console.log(111);
           this.getTask()
         }
       })
     },
 
     // 开始任务
-    snatchAppTask(appId) {
-      let AppID = appId;
-      this.$api.snatchAppTask({ AppID: AppID }).then(res => {
+    snatchAppTask(jsonData) {
+      let data = {
+        AppID: jsonData.appid,
+        isKeep: !!this.task.isKeep,
+        idfa: jsonData.idfa,
+        localIP: jsonData.localIP,
+        iosVersion: jsonData.iosVersion,
+        deviceModel: jsonData.deviceModel,
+        assistantVersion: jsonData.assistantVersion,
+        assistantPackage: jsonData.assistantPackage,
+        localTime: jsonData.localTime,
+        chargeProgress: jsonData.chargeProgress,
+        chargeStatus: jsonData.chargeStatus,
+        deviceStorage: jsonData.deviceStorage,
+        deviceBelong: jsonData.deviceBelong,
+        deviceMemory: jsonData.deviceMemory,
+        operatorCode: jsonData.operatorCode,
+        open_udid: jsonData.open_udid
+      }
+      this.$api.snatchAppTask(data).then(res => {
         if (res.success) {
           if (!res.result.isExist) {
             this.show = true;

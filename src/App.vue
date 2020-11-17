@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-09 11:31:36
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-16 19:51:49
+ * @LastEditTime: 2020-11-17 14:35:52
 -->
 <template>
   <div id="app">
@@ -86,7 +86,7 @@ export default {
       window.location = this.downloadUrl
     },
     openApp() {
-      
+      window.location = "com.BoyEye.cn:/"
     }
   }
 };

@@ -41,10 +41,6 @@ const api = {
 
 };
 
-// const uploadImg = params => {
-//   return post(api.uploadImg, params);
-// };
-
 const getUserInfo = params => {
   return get(api.getUserInfo, params)
 }
@@ -73,8 +69,9 @@ const getTask = params => {
   return get(api.getTask, params)
 }
 
+// 更改：get -> post
 const snatchAppTask = params => {
-  return get(api.snatchAppTask, params)
+  return post(api.snatchAppTask, params)
 }
 
 const abortSession = params => {
@@ -97,12 +94,14 @@ const finishTask = params => {
   return get(api.finishTask, params)
 }
 
+// 更改：post传参方式
 const saveFinishKey = params => {
-  return axios({
-    url: api.saveFinishKey,
-    method: "post",
-    params: params
-  })
+  // return axios({
+  //   url: api.saveFinishKey,
+  //   method: "post",
+  //   params: params
+  // })
+  return post(api.saveFinishKey, params)
 }
 
 const sendCaptchaCode = params => {

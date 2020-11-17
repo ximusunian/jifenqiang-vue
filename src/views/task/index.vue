@@ -4,7 +4,7 @@
  * @Author: ximusunian
  * @Date: 2020-09-22 09:38:18
  * @LastEditors: ximusunian
- * @LastEditTime: 2020-11-16 17:17:08
+ * @LastEditTime: 2020-11-17 11:13:43
 -->
 <template>
   <div id="task">
@@ -116,7 +116,7 @@
     <van-popup v-model="errorPopupShow" round :close-on-click-overlay=false :style="style">
       <div class="result-error-popup">
         <p class="result-tips">时间还不够哦~</p>
-        <p style="display: flex; align-item: center;margin-top: 0.2rem">
+        <p style="display: flex; align-items: center;margin-top: 0.2rem">
           <span style="margin-right: 0.2rem">还需试玩</span>
           <span class="continue-time">{{timeTranslate(remainingTime)}}</span>
           <!-- <van-count-down :time="Math.ceil(remainingTime)*1000" format="mm分ss秒"></van-count-down> -->
@@ -354,13 +354,13 @@ export default {
     timeTranslate(date) {
       let oldTime = Number(date)
       if(oldTime < 60) {
-        return oldTime + "秒"
+        return Math.ceil(oldTime) + "秒"
       } else if(oldTime === 60) {
         return "1分钟"
       } else if(oldTime%60 == 0){
         return parseInt(oldTime/60) + "分钟"
       } else {
-        return parseInt(oldTime/60) + "分钟" + oldTime%60 + "秒"
+        return parseInt(oldTime/60) + "分钟" + Math.ceil(oldTime%60) + "秒"
       }
     },
 
